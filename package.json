@@ -6,7 +6,8 @@
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
 		"online": "npm run build && git add . && git commit -m 'build & online' && git push",
-		"lint": "vue-cli-service lint"
+		"lint": "vue-cli-service lint",
+		"precommit": "lint-staged"
 	},
 	"dependencies": {
 		"core-js": "^2.6.5",
@@ -23,9 +24,18 @@
 		"eslint": "^5.16.0",
 		"eslint-plugin-prettier": "^3.1.0",
 		"eslint-plugin-vue": "^5.0.0",
+		"husky": "^3.0.5",
 		"less": "^3.0.4",
 		"less-loader": "^5.0.0",
+		"lint-staged": "^9.2.5",
 		"prettier": "^1.18.2",
 		"vue-template-compiler": "^2.6.10"
+	},
+	"lint-staged": {
+		"src/**/*.{js,json,vue,css}": [
+			"prettier --write",
+			"vue-cli-service lint",
+			"git add"
+		]
 	}
 }
