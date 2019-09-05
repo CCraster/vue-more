@@ -17,6 +17,10 @@
 	},
 	"devDependencies": {
 		"autoprefixer": "^7.1.2",
+		"@vue/cli-plugin-babel": "^3.3.0",
+		"@vue/cli-plugin-eslint": "^3.3.0",
+		"@vue/cli-service": "^3.3.0",
+		"@vue/eslint-config-prettier": "^4.0.1",
 		"babel-core": "^6.22.1",
 		"babel-eslint": "^8.2.1",
 		"babel-helper-vue-jsx-merge-props": "^2.0.3",
@@ -71,8 +75,8 @@
 	},
 	"lint-staged": {
 		"src/**/*.{js, json, css, vue}": [
-			"eslint --fix --ext .js",
 			"prettier --write",
+			"vue-cli-service lint",
 			"git add"
 		]
 	},
