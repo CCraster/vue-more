@@ -7,23 +7,35 @@ module.exports = {
   },
   env: {
     browser: true,
+    es6: true,
+    node: true
   },
-  extends: [
-    // https://github.com/vuejs/eslint-plugin-vue#priority-a-essential-error-prevention
-    // consider switching to `plugin:vue/strongly-recommended` or `plugin:vue/recommended` for stricter rules.
-    'plugin:vue/essential', 
-    // https://github.com/standard/standard/blob/master/docs/RULES-en.md
-    'standard'
-  ],
+  extends: ["standard", "plugin:vue/recommended", "prettier", "prettier/standard", "prettier/vue"],
   // required to lint *.vue files
-  plugins: [
-    'vue'
-  ],
+  plugins: ["standard", "vue", "prettier"],
   // add your custom rules here
   rules: {
-    // allow async-await
-    'generator-star-spacing': 'off',
-    // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    "prettier/prettier": [
+      "error",
+      {
+        htmlWhitespaceSensitivity: "ignore",
+        semi: true,
+        singleQuote: false,
+        tabWidth: 4,
+        printWidth: 120
+      }
+    ],
+    "vue/no-use-v-if-with-v-for": ["off"],
+    "vue/component-name-in-template-casing": ["off"],
+    "vue/name-property-casing": ["off"],
+    "vue/no-unused-components": ["off"],
+    "vue/require-prop-types": 0,
+    "vue/order-in-components": 0,
+    "vue/require-default-prop": 0,
+    "vue/no-v-html": 0,
+    eqeqeq: ["off"],
+      "no-new": ["off"],
+      "no-extend-native": 0,
+      "no-new-func": 0
   }
 }
