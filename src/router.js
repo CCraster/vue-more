@@ -5,7 +5,7 @@ import Home from "./views/Home.vue";
 Vue.use(Router);
 
 export default new Router({
-	mode: "history",
+	// mode: "history",     // git pages不支持history模式，暂未找到解决方式20190905
 	routes: [
 		{
 			path: "/",
