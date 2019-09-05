@@ -5,7 +5,7 @@
 	"scripts": {
 		"serve": "vue-cli-service serve",
 		"build": "vue-cli-service build",
-		"online": "git add . && git commit -m 'build & online' && git push",
+		"online": "npm run build && git add . && git commit -m 'build & online' && git push",
 		"lint": "vue-cli-service lint"
 	},
 	"dependencies": {
