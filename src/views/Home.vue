@@ -1,18 +1,34 @@
 <template>
-  <div class="home">
-    <!-- <img alt="Vue logo" src="../../public/favicon.png" /> -->
-    <HelloWorld msg="Hello Craster!" />
-  </div>
+    <div class="home">
+        <div id="nav">
+            <router-link to="/">Home</router-link>|
+            <router-link to="/about">About</router-link>
+        </div>
+        <!-- <HelloWorld msg="Hello Craster!" /> -->
+    </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+// import HelloWorld from '@/components/HelloWorld.vue';
 
 export default {
-  name: "home",
-  components: {
-    HelloWorld
-  }
+    name: 'home',
+    components: {
+        // HelloWorld
+    }
 };
 </script>
+
+<style lang="less">
+#nav {
+    padding: 30px;
+    a {
+        font-weight: bold;
+        color: #2c3e50;
+        &.router-link-exact-active {
+            color: #42b983;
+        }
+    }
+}
+</style>
