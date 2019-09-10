@@ -5,12 +5,7 @@
 </template>
 
 <script>
-import { homeAnimation } from './animation';
-export default {
-    mounted() {
-        homeAnimation('#app');
-    }
-};
+export default {};
 </script>
 
 <style lang="less">
@@ -18,6 +13,6 @@ export default {
     height: 100%;
     text-align: center;
     color: #2c3e50;
-    background-color: #42b983;
+    background-color: rgba(0, 0, 0, 0.9);
 }
 </style>
