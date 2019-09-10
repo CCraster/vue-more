@@ -13,6 +13,6 @@ export default {};
     height: 100%;
     text-align: center;
     color: #2c3e50;
-    background-color: rgba(0, 0, 0, 0.9);
+    // background-color: rgba(0, 0, 0, 0.9);
 }
 </style>
