@@ -40,6 +40,17 @@ function homeAnimationCreator(selector, color) {
 }
 
 // Login面板动画
+function loginPanelAnimation(target) {
+    const animeTime = 1300;
+    anime({
+        targets: target,
+        easing: 'easeInOutBack',
+        duration: animeTime,
+        translateX: ['-50%', '-50%'],
+        translateY: ['50%', '-50%'],
+        opacity: [0, 1]
+    });
+}
 
 /*
  *   Login面板头像切换动画
@@ -63,7 +74,7 @@ function loginPortraitAnimation(deHighlightTarget, HighlightTarget, bgTarget) {
                     : [-40, 40];
             },
             translateY: [-40, -15],
-            rotateY: [0, 180]
+            rotateY: [0, 150]
         })
         .add(
             {
@@ -75,7 +86,7 @@ function loginPortraitAnimation(deHighlightTarget, HighlightTarget, bgTarget) {
                         : [-70, -40];
                 },
                 translateY: [-15, -40],
-                rotateY: [180, 0]
+                rotateY: [150, 0]
             },
             0
         )
@@ -99,4 +110,4 @@ function loginPortraitAnimation(deHighlightTarget, HighlightTarget, bgTarget) {
     return animation;
 }
 
-export { homeAnimationCreator, loginPortraitAnimation };
+export { homeAnimationCreator, loginPortraitAnimation, loginPanelAnimation };

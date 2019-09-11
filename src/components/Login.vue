@@ -20,13 +20,13 @@
         <section class="login-content">
             <div class="login-input-container">
                 <el-input
-                    placeholder="输入密码吧，少年"
+                    placeholder="输入暗号吧，少年"
                     v-model="loginPassword"
                     size="small"
                     prefix-icon="el-icon-key"
                 ></el-input>
             </div>
-            <span class="login-forget-tip">忘记密码？</span>
+            <span class="login-forget-tip" @click="s">忘记密码?</span>
             <div class="login-button-container">
                 <el-button size="small" type="primary" plain>登陆</el-button>
                 <el-button size="small" type="warning" plain>取消</el-button>
@@ -35,7 +35,7 @@
     </div>
 </template>
 <script>
-import { loginPortraitAnimation } from '@/animation';
+import { loginPortraitAnimation, loginPanelAnimation } from '@/animation';
 export default {
     name: 'Login',
     data() {
@@ -52,6 +52,7 @@ export default {
         }
     },
     mounted() {
+        loginPanelAnimation('.login-container');
         this.rootPortraitHighlight = loginPortraitAnimation(
             '#portrait-guest',
             '#portrait-root',
@@ -90,14 +91,14 @@ export default {
     @color-guest: rgb(246, 117, 5);
     @color-boxShadow: #777;
 
-    height: 200px;
+    height: 220px;
     width: 400px;
     box-sizing: border-box;
     position: absolute;
     top: 50%;
     left: 50%;
     border-radius: 3px;
-    transform: translate(-50%, -70%);
+    // transform: translate(-50%, -50%);
     box-shadow: 0px 0px 5px @color-boxShadow;
     // background: rgba(123, 195, 253, 0.745);
     .login-header {
@@ -140,7 +141,7 @@ export default {
     .login-content {
         // width: 300px;
         text-align: center;
-        padding-top: 10px;
+        padding-top: 15px;
         position: relative;
         .login-input-container {
             display: inline-block;
@@ -150,14 +151,20 @@ export default {
             position: absolute;
             display: block;
             color: #fff;
-            margin-top: 4px;
+            margin-top: 6px;
             right: 60px;
             font-size: 12px;
-            // float: right;
-            // margin-right: 60px;
+        }
+        .login-forget-tip:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .login-forget-tip:active {
+            font-weight: bold;
+            color: #409eff;
         }
         .login-button-container {
-            margin-top: 30px;
+            margin-top: 40px;
         }
         .login-button-container button {
             width: 90px;
