@@ -39,4 +39,64 @@ function homeAnimationCreator(selector, color) {
     return animation;
 }
 
-export { homeAnimationCreator };
+// Login面板动画
+
+/*
+ *   Login面板头像切换动画
+ *   selector1: 取消强调效果
+ *   selector2: 强调
+ */
+function loginPortraitAnimation(deHighlightTarget, HighlightTarget, bgTarget) {
+    const animeTime = 500;
+    const animation = anime
+        .timeline({
+            easing: 'easeInOutQuad',
+            autoplay: false,
+            duration: animeTime
+        })
+        .add({
+            targets: deHighlightTarget,
+            width: [80, 30],
+            translateX: () => {
+                return deHighlightTarget === '#portrait-root'
+                    ? [-40, -70]
+                    : [-40, 40];
+            },
+            translateY: [-40, -15],
+            rotateY: [0, 180]
+        })
+        .add(
+            {
+                targets: HighlightTarget,
+                width: [30, 80],
+                translateX: () => {
+                    return deHighlightTarget === '#portrait-root'
+                        ? [40, -40]
+                        : [-70, -40];
+                },
+                translateY: [-15, -40],
+                rotateY: [180, 0]
+            },
+            0
+        )
+        .add(
+            {
+                targets: bgTarget,
+                backgroundColor: () => {
+                    return deHighlightTarget === '#portrait-root'
+                        ? [
+                              'rgba(123, 195, 253, 0.745)',
+                              'rgba(246, 117, 5, 0.745)'
+                          ]
+                        : [
+                              'rgba(246, 117, 5, 0.745)',
+                              'rgba(123, 195, 253, 0.745)'
+                          ];
+                }
+            },
+            0
+        );
+    return animation;
+}
+
+export { homeAnimationCreator, loginPortraitAnimation };

@@ -11,8 +11,8 @@ export default {};
 <style lang="less">
 #app {
     height: 100%;
-    text-align: center;
+    // text-align: center;
     color: #2c3e50;
-    // background-color: rgba(0, 0, 0, 0.9);
+    background-color: #f5f5f5;
 }
 </style>
