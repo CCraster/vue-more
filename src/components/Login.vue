@@ -20,16 +20,39 @@
         <section class="login-content">
             <div class="login-input-container">
                 <el-input
+                    v-show="rootPortraitHighlighted"
                     placeholder="输入暗号吧，少年"
                     v-model="loginPassword"
                     size="small"
                     prefix-icon="el-icon-key"
                 ></el-input>
+                <span
+                    v-show="rootPortraitHighlighted"
+                    class="login-forget-tip"
+                    @click="handleForgotClick"
+                    >忘记密码?</span
+                >
+                <span v-show="!rootPortraitHighlighted" class="login-guest-tip"
+                    >你可以选择「登陆」查看受限内容，或者，尝试一下「有东西」。</span
+                >
             </div>
-            <span class="login-forget-tip" @click="s">忘记密码?</span>
             <div class="login-button-container">
-                <el-button size="small" type="primary" plain>登陆</el-button>
-                <el-button size="small" type="warning" plain>取消</el-button>
+                <el-button
+                    @click="handleLoginButtonClick('login')"
+                    size="small"
+                    type="primary"
+                    plain
+                    >登陆</el-button
+                >
+                <el-button
+                    @click="handleLoginButtonClick('cancel')"
+                    size="small"
+                    type="warning"
+                    plain
+                    >{{
+                        rootPortraitHighlighted ? '取消' : '有东西'
+                    }}</el-button
+                >
             </div>
         </section>
     </div>
@@ -80,11 +103,45 @@ export default {
                 this.guestPortraitHighlight.play();
                 this.rootPortraitHighlighted = false;
             }
+        },
+        handleForgotClick() {
+            this.$message({
+                message: `重置密码什么的是不可能有的啦，密码都能忘，还是别登陆了！`,
+                type: 'warning'
+                // showClose: true
+            });
+        },
+        handleLoginButtonClick(type) {
+            if (type === 'login') {
+                if (this.rootPortraitHighlighted) {
+                    console.log('root login');
+                } else {
+                    this.$message({
+                        message: '抱歉，「访客登陆」功能仍在开发中！',
+                        type: 'warning'
+                        // center: true
+                    });
+                }
+            } else {
+                if (this.rootPortraitHighlighted) {
+                    this.$message({
+                        message: `抱歉，「取消」功能是根据颜值开启的！`,
+                        type: 'error'
+                        // center: true
+                    });
+                } else {
+                    this.$message({
+                        message: '抱歉，「访客有东西」功能仍在开发中！',
+                        type: 'warning'
+                        // center: true
+                    });
+                }
+            }
         }
     }
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .login-container {
     /* 变量定义 */
     @color-root: rgb(123, 195, 253);
@@ -95,14 +152,12 @@ export default {
     width: 400px;
     box-sizing: border-box;
     position: absolute;
-    top: 50%;
+    // top: 50%;
     left: 50%;
     border-radius: 3px;
-    // transform: translate(-50%, -50%);
+    transform: translate(-50%, 0%);
     box-shadow: 0px 0px 5px @color-boxShadow;
-    // background: rgba(123, 195, 253, 0.745);
     .login-header {
-        // padding-top: 40px;
         height: 70px;
         text-align: center;
         .img-portrait {
@@ -121,16 +176,10 @@ export default {
             left: 50%;
             box-shadow: 0px 0px 10px @color-root;
         }
-        // #portrait-root:hover {
-        //     box-shadow: 0px 0px 10px rgb(123, 195, 253);
-        // }
         #portrait-guest {
             left: 50%;
             box-shadow: 0px 0px 10px @color-guest;
         }
-        // #portrait-guest:hover {
-        //     box-shadow: 0px 0px 10px rgb(246, 117, 5);
-        // }
         span {
             display: inline-block;
             margin-top: 40px + 4px;
@@ -141,30 +190,43 @@ export default {
     .login-content {
         // width: 300px;
         text-align: center;
-        padding-top: 15px;
+        // padding-top: 15px;
         position: relative;
         .login-input-container {
             display: inline-block;
             width: 280px;
-        }
-        .login-forget-tip {
-            position: absolute;
-            display: block;
-            color: #fff;
-            margin-top: 6px;
-            right: 60px;
-            font-size: 12px;
-        }
-        .login-forget-tip:hover {
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        .login-forget-tip:active {
-            font-weight: bold;
-            color: #409eff;
+            height: 70px;
+            padding-top: 20px;
+            .login-forget-tip {
+                position: absolute;
+                display: block;
+                color: #fff;
+                margin-top: 6px;
+                right: 60px;
+                font-size: 12px;
+            }
+            .login-forget-tip:hover {
+                text-decoration: underline;
+                cursor: pointer;
+            }
+            .login-forget-tip:active {
+                font-weight: bold;
+                color: #409eff;
+            }
+            .login-guest-tip {
+                position: relative;
+                display: inline-block;
+                color: #fff;
+                width: 280px;
+                font-size: 14px;
+                padding: 0 20px;
+                left: -20px; // 位置受限于login-input-container，借助定位修正span的位置
+                border-left: 2px solid @color-guest;
+                border-right: 2px solid @color-guest;
+            }
         }
         .login-button-container {
-            margin-top: 40px;
+            // margin-top: 40px;
         }
         .login-button-container button {
             width: 90px;

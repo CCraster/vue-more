@@ -10,7 +10,6 @@ function homeAnimationCreator(selector, color) {
     const animeTime = 1000;
 
     /* 动画制作 */
-    // anime.remove(selector);
     const animation = anime
         .timeline({
             easing: 'easeInOutQuad'
@@ -46,8 +45,7 @@ function loginPanelAnimation(target) {
         targets: target,
         easing: 'easeInOutBack',
         duration: animeTime,
-        translateX: ['-50%', '-50%'],
-        translateY: ['50%', '-50%'],
+        top: ['75%', '25%'],
         opacity: [0, 1]
     });
 }
