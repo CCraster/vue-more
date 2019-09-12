@@ -4,6 +4,7 @@
             <img
                 id="portrait-root"
                 class="img-portrait"
+                alt="portrait-root"
                 @click="handlePortraitClick($event)"
                 src="@/assets/portrait/root.png"
             />
@@ -12,8 +13,9 @@
             <img
                 id="portrait-guest"
                 class="img-portrait"
+                alt="portrait-guest"
                 @click="handlePortraitClick($event)"
-                src="@/assets/portrait/guest8.png"
+                src="@/assets/portrait/guest.png"
             />
             <span>{{ currentUser }}</span>
         </header>
@@ -49,10 +51,9 @@
                     size="small"
                     type="warning"
                     plain
-                    >{{
-                        rootPortraitHighlighted ? '取消' : '有东西'
-                    }}</el-button
                 >
+                    {{ rootPortraitHighlighted ? '取消' : '有东西' }}
+                </el-button>
             </div>
         </section>
     </div>
@@ -114,7 +115,11 @@ export default {
         handleLoginButtonClick(type) {
             if (type === 'login') {
                 if (this.rootPortraitHighlighted) {
-                    console.log('root login');
+                    this.$message({
+                        message: '「登陆」功能火速开发中，敬请期待！',
+                        type: 'success'
+                        // center: true
+                    });
                 } else {
                     this.$message({
                         message: '抱歉，「访客登陆」功能仍在开发中！',
