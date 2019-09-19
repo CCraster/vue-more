@@ -5,8 +5,8 @@
                 id="portrait-root"
                 class="img-portrait"
                 alt="portrait-root"
-                @click="handlePortraitClick($event)"
-                src="@/assets/portrait/root.png"
+                @click="portraitClicked($event)"
+                src="@/assets/image/portrait/root.png"
             />
             <!-- </router-link> -->
             <!-- <router-link to="/about"> -->
@@ -14,8 +14,8 @@
                 id="portrait-guest"
                 class="img-portrait"
                 alt="portrait-guest"
-                @click="handlePortraitClick($event)"
-                src="@/assets/portrait/guest.png"
+                @click="portraitClicked($event)"
+                src="@/assets/image/portrait/guest.png"
             />
             <span>{{ currentUser }}</span>
         </header>
@@ -27,11 +27,12 @@
                     v-model="loginPassword"
                     size="small"
                     prefix-icon="el-icon-key"
+                    show-password
                 ></el-input>
                 <span
                     v-show="rootPortraitHighlighted"
                     class="login-forget-tip"
-                    @click="handleForgotClick"
+                    @click="forgetPasswordLinkClicked"
                     >忘记密码?</span
                 >
                 <span v-show="!rootPortraitHighlighted" class="login-guest-tip"
@@ -51,17 +52,21 @@
                     size="small"
                     type="warning"
                     plain
+                    >{{
+                        rootPortraitHighlighted ? '取消' : '有东西'
+                    }}</el-button
                 >
-                    {{ rootPortraitHighlighted ? '取消' : '有东西' }}
-                </el-button>
             </div>
         </section>
     </div>
 </template>
 <script>
 import { loginPortraitAnimation, loginPanelAnimation } from '@/animation';
+import { getRootUserGist } from '@/apis/gistFetch';
+import { getGistFiles } from '@/common/util';
+import { mapState, mapMutations } from 'vuex';
 export default {
-    name: 'Login',
+    name: 'LoginPanel',
     data() {
         return {
             rootPortraitHighlighted: true,
@@ -71,17 +76,20 @@ export default {
         };
     },
     computed: {
+        ...mapState(['isRootUserLogin']),
         currentUser() {
             return this.rootPortraitHighlighted ? 'Craster' : 'Guest';
         }
     },
     mounted() {
-        loginPanelAnimation('.login-container');
+        loginPanelAnimation('.login-container'); // 执行登陆面板进入动画
+        // 初始化root用户头像点击动画
         this.rootPortraitHighlight = loginPortraitAnimation(
             '#portrait-guest',
             '#portrait-root',
             '.login-container'
         );
+        // 初始化guest用户头像点击动画
         this.guestPortraitHighlight = loginPortraitAnimation(
             '#portrait-root',
             '#portrait-guest',
@@ -89,7 +97,9 @@ export default {
         );
     },
     methods: {
-        handlePortraitClick(e) {
+        ...mapMutations(['setIsRootUserLogin']),
+        /* 登陆面板头像点击处理函数 */
+        portraitClicked(e) {
             let targetId = e.target.id;
             if (
                 targetId === 'portrait-root' &&
@@ -105,27 +115,21 @@ export default {
                 this.rootPortraitHighlighted = false;
             }
         },
-        handleForgotClick() {
+        /* 忘记密码链接点击处理函数 */
+        forgetPasswordLinkClicked() {
             this.$message({
                 message: `重置密码什么的是不可能有的啦，密码都能忘，还是别登陆了！`,
                 type: 'warning'
                 // showClose: true
             });
         },
-        handleLoginButtonClick(type) {
+        /* 登陆面板按钮被点击的处理函数 */
+        async handleLoginButtonClick(type) {
             if (type === 'login') {
                 if (this.rootPortraitHighlighted) {
-                    this.$message({
-                        message: '「登陆」功能火速开发中，敬请期待！',
-                        type: 'success'
-                        // center: true
-                    });
+                    this.handleRootUserLogin();
                 } else {
-                    this.$message({
-                        message: '抱歉，「访客登陆」功能仍在开发中！',
-                        type: 'warning'
-                        // center: true
-                    });
+                    this.handleGuestUserLogin();
                 }
             } else {
                 if (this.rootPortraitHighlighted) {
@@ -142,6 +146,41 @@ export default {
                     });
                 }
             }
+        },
+        /* Root-处理登陆按钮事件 */
+        async handleRootUserLogin() {
+            // 若没输入密码，显示提示并退出
+            if (!this.loginPassword) {
+                this.$message({
+                    message: '请输入密码以登陆！',
+                    type: 'warning'
+                });
+                return;
+            }
+            // 有输入密码，进行验证
+            let res = await getRootUserGist();
+            let userList = JSON.parse(getGistFiles(res)['user.js'].content);
+            if (this.loginPassword === userList.password) {
+                this.$message({
+                    message: 'Bingo, welcome!',
+                    type: 'success'
+                });
+                this.setIsRootUserLogin(); // 更改为ROOT用户
+                this.$router.push('home'); // 登陆成功跳转
+            } else {
+                this.$message({
+                    message: '抱歉，您输入的密码有误！',
+                    type: 'error'
+                });
+            }
+        },
+        /* Guest-处理登陆按钮事件 */
+        handleGuestUserLogin() {
+            this.$message({
+                message: '真可惜，你其实可以做的更好！',
+                type: 'warning'
+            });
+            this.$router.push('home');
         }
     }
 };

@@ -1,50 +1,52 @@
 <template>
-    <div class="home">
-        <vue-particles
-            class="particles"
-            color="#453999"
-            linesColor="#453999"
-        ></vue-particles>
-        <Login />
-    </div>
+    <el-container class="home">
+        <el-header class="home-header">
+            <Header />
+        </el-header>
+        <el-main class="home-main">
+            <TodoPage />
+        </el-main>
+        <el-footer class="home-footer">
+            <Footer />
+        </el-footer>
+    </el-container>
 </template>
 
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue';
-import { mapState, mapGetters, mapMutations } from 'vuex';
-import Login from '@/components/Login';
-
+import { mapState } from 'vuex';
+import Header from '@/components/page/Header';
+import Footer from '@/components/page/Footer';
+import TodoPage from '@/components/page/TodoPage';
 export default {
     name: 'Home',
     components: {
-        Login
+        Header,
+        Footer,
+        TodoPage
     },
-    data() {
-        return {};
-    },
-    mounted() {},
     computed: {
-        ...mapState(['homeFirstAnimeFinished']),
-        ...mapGetters(['currentPageColor'])
-    },
-    methods: {
-        ...mapMutations([
-            'updateHomeFirstAnimeFinished',
-            'updateCurrentPageColorIndex'
-        ])
+        ...mapState(['isRootUserLogin'])
     }
 };
 </script>
 
 <style lang="less" scoped>
 .home {
+    /* 变量定义 */
+    @color-root: #666;
+    @color-guest: rgb(246, 117, 5);
+    @color-boxShadow: #777;
+
     height: 100%;
-    width: 100%;
-    display: relative;
-    .particles {
-        height: 99%; // 100%则页面底部出现白边？？？
-        width: 100%;
+    .home-header {
+        background-color: #ccc;
+    }
+    .home-main {
+        background-color: #fff;
+    }
+    .home-footer {
+        background-color: #fff;
+        padding: 0px 10%;
     }
 }
 </style>

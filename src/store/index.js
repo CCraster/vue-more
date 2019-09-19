@@ -5,9 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        homeFirstAnimeFinished: false,
-        pageColor: ['rgba( 123, 12, 211, 1)'],
-        currentPageColorIndex: 0
+        isRootUserLogin: false
     },
     getters: {
         currentPageColor: state => {
@@ -15,12 +13,8 @@ export default new Vuex.Store({
         }
     },
     mutations: {
-        updateHomeFirstAnimeFinished: state => {
-            state.homeFirstAnimeFinished = true;
-        },
-        updateCurrentPageColorIndex: state => {
-            state.currentPageColorIndex =
-                ++state.currentPageColorIndex % state.pageColor.length;
+        setIsRootUserLogin(state) {
+            state.isRootUserLogin = true;
         }
     },
     actions: {}
