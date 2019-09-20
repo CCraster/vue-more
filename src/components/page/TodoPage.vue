@@ -16,6 +16,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    user-select: none;
     & img {
         width: 200px;
         margin-bottom: 5px;

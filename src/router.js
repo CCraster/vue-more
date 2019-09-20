@@ -15,7 +15,10 @@ export default new Router({
         },
         {
             path: '/home',
-            name: 'home',
+            redirect: `/home/todolist`
+        },
+        {
+            path: `/home/:menuName`,
             component: Home
         },
         {
