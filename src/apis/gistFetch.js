@@ -4,11 +4,59 @@
  * @description:
  */
 import { fetch } from '@/common/io';
+import { SERVER } from '@/constants/';
 
 /*  */
-export function getRootUserGist() {
+export function getSingleGist(gistId) {
     return fetch({
-        url: 'https://api.github.com/gists/6f63ac9cf42770a1ab4699b1620a8729',
+        url: `${SERVER}/gists/${gistId}`,
         method: 'get'
+    });
+}
+
+/*  */
+export function addGistFile(gistId, data) {
+    let data_reconstruct = {
+        files: {
+            [data.oldFileName]: {
+                content: JSON.stringify(data),
+                filename: data.fileName
+            }
+        }
+    };
+    return fetch({
+        url: `${SERVER}/gists/${gistId}`,
+        data: data_reconstruct,
+        method: 'patch'
+    });
+}
+
+/*  */
+export function editGistFile(gistId, data) {
+    let data_reconstruct = {
+        files: {
+            [data.fileName]: {
+                content: JSON.stringify(data)
+            }
+        }
+    };
+    return fetch({
+        url: `${SERVER}/gists/${gistId}`,
+        data: data_reconstruct,
+        method: 'patch'
+    });
+}
+
+/*  */
+export function deleteGistFile(gistId, fileName) {
+    let data_reconstruct = {
+        files: {
+            [fileName]: null
+        }
+    };
+    return fetch({
+        url: `${SERVER}/gists/${gistId}`,
+        data: data_reconstruct,
+        method: 'patch'
     });
 }

@@ -5,16 +5,20 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        isRootUserLogin: false
+        isRootUserLogin: false,
+        selectedTodolistName: '',
+        selectedBlockName: ''
     },
-    getters: {
-        currentPageColor: state => {
-            return state.pageColor[state.currentPageColorIndex];
-        }
-    },
+    getters: {},
     mutations: {
         setIsRootUserLogin(state) {
             state.isRootUserLogin = true;
+        },
+        setSelectedTodolistName(state, newSelectedTodolistName) {
+            state.selectedTodolistName = newSelectedTodolistName;
+        },
+        setSelectedBlockName(state, newSelectedBlockName) {
+            state.selectedBlockName = newSelectedBlockName;
         }
     },
     actions: {}

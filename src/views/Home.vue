@@ -1,13 +1,13 @@
 <template>
-    <el-container class="home">
-        <el-header class="home-header">
+    <div class="home">
+        <div class="home-header">
             <img src="@/assets/logo_1.png" />
             <el-menu
                 :default-active="activeMenu"
                 mode="horizontal"
                 class="header-menu"
                 @select="handleMenuSelect"
-                background-color="#2196f3"
+                background-color="#007add"
                 text-color="#fff"
                 active-text-color="#f67505"
             >
@@ -19,20 +19,21 @@
                 >
             </el-menu>
             <div class="header-user">Hi, {{ loginUserName }}!</div>
-        </el-header>
-        <el-main class="home-main">
+        </div>
+        <div class="home-main">
             <component :is="menus[activeMenu]"></component>
-        </el-main>
-        <el-footer class="home-footer">
+        </div>
+        <div class="home-footer">
             <Footer />
-        </el-footer>
-    </el-container>
+        </div>
+    </div>
 </template>
 
 <script>
 import { mapState } from 'vuex';
 import Footer from '@/components/page/Footer';
 import TodoPage from '@/components/page/TodoPage';
+import Todolist from '@/components/todolist/Todolist';
 import { ROOT_MENU, GUEST_MENU } from '@/constants/';
 export default {
     name: 'Home',
@@ -44,7 +45,7 @@ export default {
         return {
             menus: {
                 blog: TodoPage,
-                todolist: TodoPage,
+                todolist: Todolist,
                 aboutme: TodoPage
             }
         };
@@ -70,7 +71,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .home {
     /* 变量定义 */
     @color-root: #666;
@@ -80,8 +81,9 @@ export default {
 
     height: 100%;
     .home-header {
-        background-color: #2196f3;
-        padding: 0px 10%;
+        // background-color: #2196f3;
+        background-color: #007add;
+        padding: 0px 15%;
         height: 60px;
         display: flex;
         user-select: none;
@@ -100,11 +102,15 @@ export default {
         }
     }
     .home-main {
+        min-height: calc(100% - 120px);
+        // min-height: ~'calc(100% - 120px)';
+        padding: 0px 15%;
         background-color: #fff;
     }
     .home-footer {
+        height: 60px;
         background-color: #fff;
-        padding: 0px 10%;
+        padding: 0px 15%;
     }
 }
 </style>
