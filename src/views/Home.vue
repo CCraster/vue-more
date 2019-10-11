@@ -41,7 +41,7 @@ import store from '@/store/';
 import Footer from '@/components/page/Footer';
 import TodoPage from '@/components/page/TodoPage';
 import Todolist from '@/components/todolist/Todolist';
-import { ROOT_MENU, GUEST_MENU } from '@/constants/';
+import { ROOT_MENU, GUEST_MENU, USER_TYPE } from '@/constants/';
 export default {
     name: 'Home',
     components: {
@@ -58,16 +58,21 @@ export default {
             accessToken: store.state.token.token
         };
     },
+    mounted() {
+        console.log(this.loginUserType);
+    },
     computed: {
-        ...mapState(['isRootUserLogin']),
+        ...mapState(['loginUserType']),
         userMenu() {
-            return this.isRootUserLogin ? ROOT_MENU : GUEST_MENU;
+            return this.loginUserType === USER_TYPE.ROOT
+                ? ROOT_MENU
+                : GUEST_MENU;
         },
         activeMenu() {
             return this.$route.params.menuName;
         },
         loginUserName() {
-            return this.isRootUserLogin ? 'Craster' : 'Guest';
+            return this.loginUserType === USER_TYPE.ROOT ? 'Craster' : 'Guest';
         }
         // accessToken() {
         //     return this.token.token;

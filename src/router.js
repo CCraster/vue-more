@@ -1,21 +1,28 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import Cookie from '@/common/cookie';
+import { USER_KEY } from '@/constants';
 import Login from './views/Login.vue';
 import Home from './views/Home.vue';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
     // mode: "history",     // git pages不支持history模式，暂未找到解决方式20190905
     routes: [
         {
             path: '/',
+            name: 'root'
+            // redirect: '/login'
+        },
+        {
+            path: '/login',
             name: 'login',
             component: Login
         },
         {
             path: '/home',
-            redirect: `/home/todolist`
+            redirect: `/home/blog`
         },
         {
             path: `/home/:menuName`,
@@ -32,3 +39,22 @@ export default new Router({
         }
     ]
 });
+
+router.beforeEach((to, from, next) => {
+    let login = Cookie.getAttribute(USER_KEY);
+    if (login) {
+        if (to.path === '/') {
+            next('/home');
+        } else {
+            next();
+        }
+    } else {
+        if (to.path !== '/login') {
+            next('/login');
+        } else {
+            next();
+        }
+    }
+});
+
+export default router;

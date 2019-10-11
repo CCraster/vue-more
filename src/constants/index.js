@@ -1,6 +1,14 @@
 /* gist API地址 */
 export const SERVER = 'https://api.github.com';
 
+/*  */
+export const USER_KEY = 'USER_KEY';
+export const USER_TYPE = {
+    ROOT: 'ROOT',
+    GUEST_ORDINARY: 'GUEST_ORDINARY',
+    GUEST_HASSOMETHING: 'GUEST_HASSOMETHING'
+};
+
 /* 文件存储gist id */
 export const GIST_ROOTUSER = '6f63ac9cf42770a1ab4699b1620a8729';
 export const GIST_TODOLIST = '85649915f0fac602008b7e1b3f485337';

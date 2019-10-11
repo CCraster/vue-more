@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import token from './modules/token';
+import Cookie from '@/common/cookie';
+import { USER_KEY } from '@/constants';
 
 Vue.use(Vuex);
 
@@ -9,14 +11,14 @@ export default new Vuex.Store({
         token
     },
     state: {
-        isRootUserLogin: false,
+        loginUserType: Cookie.getAttribute(USER_KEY),
         selectedTodolistName: '',
         selectedBlockName: ''
     },
     getters: {},
     mutations: {
-        setIsRootUserLogin(state) {
-            state.isRootUserLogin = true;
+        setLoginUserType(state, userType) {
+            state.loginUserType = userType;
         },
         setSelectedTodolistName(state, newSelectedTodolistName) {
             state.selectedTodolistName = newSelectedTodolistName;

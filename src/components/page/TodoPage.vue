@@ -17,7 +17,6 @@
     justify-content: center;
     align-items: center;
     user-select: none;
-    // padding: 15%; // 为了抵消父元素min-height的干扰，近乎垂直居中
     & img {
         width: 200px;
         margin-bottom: 5px;

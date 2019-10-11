@@ -52,10 +52,9 @@
                     size="small"
                     type="warning"
                     plain
-                    >{{
-                        rootPortraitHighlighted ? '取消' : '有东西'
-                    }}</el-button
                 >
+                    {{ rootPortraitHighlighted ? '取消' : '有东西' }}
+                </el-button>
             </div>
         </section>
     </div>
@@ -63,7 +62,8 @@
 <script>
 import { loginPortraitAnimation, loginPanelAnimation } from '@/animation';
 import GistApi from '@/apis/gist';
-import { GIST_ROOTUSER } from '@/constants/';
+import Cookie from '@/common/cookie';
+import { GIST_ROOTUSER, USER_KEY, USER_TYPE } from '@/constants/';
 import { getGistFiles } from '@/common/util';
 import { mapState, mapMutations } from 'vuex';
 export default {
@@ -77,7 +77,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(['isRootUserLogin']),
+        ...mapState(['loginUserType']),
         currentUser() {
             return this.rootPortraitHighlighted ? 'Craster' : 'Guest';
         }
@@ -98,7 +98,7 @@ export default {
         );
     },
     methods: {
-        ...mapMutations(['setIsRootUserLogin']),
+        ...mapMutations(['setLoginUserType']),
         /* 登陆面板头像点击处理函数 */
         portraitClicked(e) {
             let targetId = e.target.id;
@@ -166,8 +166,10 @@ export default {
                     message: 'Bingo, welcome!',
                     type: 'success'
                 });
-                this.setIsRootUserLogin(); // 更改为ROOT用户
-                this.$router.push('home'); // 登陆成功跳转
+                Cookie.setAttribute(USER_KEY, USER_TYPE.ROOT, 1); //
+                this.setLoginUserType(USER_TYPE.ROOT); // 更改为ROOT用户
+                console.log(this.loginUserType);
+                this.$router.push('home/todolist'); // 登陆成功跳转
             } else {
                 this.$message({
                     message: '抱歉，您输入的密码有误！',
@@ -181,7 +183,9 @@ export default {
                 message: '可惜，你其实可以做的更好！',
                 type: 'warning'
             });
-            this.$router.push('home');
+            Cookie.setAttribute(USER_KEY, USER_TYPE.GUEST_ORDINARY, 1);
+            this.setLoginUserType(USER_TYPE.GUEST_ORDINARY);
+            this.$router.push('home/blog');
         }
     }
 };
