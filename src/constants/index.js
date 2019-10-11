@@ -11,6 +11,7 @@ export const EVENT_DELETE_TODOLIST = 'delete-todolist';
 export const EVENT_ADD_TODOLIST_ITEM = 'add-todolist-item';
 export const EVENT_EDIT_ITEM = 'edit-item';
 export const EVENT_DELETE_ITEM = 'delete-item';
+export const EVENT_DELETE_BLOCK = 'delete-block';
 
 /* 用户菜单 */
 export const ROOT_MENU = [

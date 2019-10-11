@@ -52,16 +52,17 @@
                     size="small"
                     type="warning"
                     plain
+                    >{{
+                        rootPortraitHighlighted ? '取消' : '有东西'
+                    }}</el-button
                 >
-                    {{ rootPortraitHighlighted ? '取消' : '有东西' }}
-                </el-button>
             </div>
         </section>
     </div>
 </template>
 <script>
 import { loginPortraitAnimation, loginPanelAnimation } from '@/animation';
-import { getSingleGist } from '@/apis/gistFetch';
+import GistApi from '@/apis/gist';
 import { GIST_ROOTUSER } from '@/constants/';
 import { getGistFiles } from '@/common/util';
 import { mapState, mapMutations } from 'vuex';
@@ -158,7 +159,7 @@ export default {
                 return;
             }
             // 有输入密码，进行验证
-            let res = await getSingleGist(GIST_ROOTUSER);
+            let res = await GistApi.getSingleGist(GIST_ROOTUSER);
             let userList = JSON.parse(getGistFiles(res)['user.js'].content);
             if (this.loginPassword === userList.password) {
                 this.$message({

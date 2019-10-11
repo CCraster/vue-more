@@ -18,6 +18,12 @@
                     >{{ menu.name }}</el-menu-item
                 >
             </el-menu>
+            <div class="header-token">
+                <el-input v-model="accessToken" size="small"></el-input>
+                <el-button @click="handleSubmitToken" size="small"
+                    >提交</el-button
+                >
+            </div>
             <div class="header-user">Hi, {{ loginUserName }}!</div>
         </div>
         <div class="home-main">
@@ -31,6 +37,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import store from '@/store/';
 import Footer from '@/components/page/Footer';
 import TodoPage from '@/components/page/TodoPage';
 import Todolist from '@/components/todolist/Todolist';
@@ -47,7 +54,8 @@ export default {
                 blog: TodoPage,
                 todolist: Todolist,
                 aboutme: TodoPage
-            }
+            },
+            accessToken: store.state.token.token
         };
     },
     computed: {
@@ -61,11 +69,18 @@ export default {
         loginUserName() {
             return this.isRootUserLogin ? 'Craster' : 'Guest';
         }
+        // accessToken() {
+        //     return this.token.token;
+        // }
     },
     methods: {
+        // ...mapMutations(['SET_TOKEN']),
         handleMenuSelect(menuName) {
             if (this.activeMenu === menuName) return;
             this.$router.push(menuName);
+        },
+        handleSubmitToken() {
+            this.$store.dispatch('Authentication', this.accessToken);
         }
     }
 };
@@ -102,7 +117,7 @@ export default {
         }
     }
     .home-main {
-        min-height: calc(100% - 120px);
+        height: calc(100% - 120px);
         // min-height: ~'calc(100% - 120px)';
         padding: 0px 15%;
         background-color: #fff;

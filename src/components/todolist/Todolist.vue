@@ -19,19 +19,15 @@
 
 <script>
 import eventBus from '@/common/eventBus';
-import { mapState } from 'vuex';
+import { mapState, mapMutations } from 'vuex';
 import {
     GIST_TODOLIST,
     EVENT_ADD_TODOLIST_ITEM,
     EVENT_EDIT_ITEM,
-    EVENT_DELETE_ITEM
+    EVENT_DELETE_ITEM,
+    EVENT_DELETE_BLOCK
 } from '@/constants/';
-import {
-    getSingleGist,
-    addGistFile,
-    editGistFile,
-    deleteGistFile
-} from '@/apis/gistFetch';
+import GistApi from '@/apis/gist';
 import { getGistFiles } from '@/common/util';
 import AddTagDialog from '@/components/page/AddTagDialog';
 import TodolistNav from './TodolistNav';
@@ -89,6 +85,7 @@ export default {
         eventBus.$on(EVENT_ADD_TODOLIST_ITEM, this.addTodolistItem);
         eventBus.$on(EVENT_EDIT_ITEM, this.editBlockItem);
         eventBus.$on(EVENT_DELETE_ITEM, this.deleteBlockItem);
+        eventBus.$on(EVENT_DELETE_BLOCK, this.deleteBlock);
     },
     beforeDestroy() {
         eventBus.$off('delete-todolist', this.deleteTodolist);
@@ -97,9 +94,12 @@ export default {
         eventBus.$off(EVENT_ADD_TODOLIST_ITEM, this.addTodolistItem);
     },
     methods: {
+        ...mapMutations(['setSelectedBlockName']),
         /* 获取todolist的gist */
         async getTodolist() {
-            this.todolists = getGistFiles(await getSingleGist(GIST_TODOLIST));
+            this.todolists = getGistFiles(
+                await GistApi.getSingleGist(GIST_TODOLIST)
+            );
         },
         /* 增加todolist弹窗显示标志 */
         showAddTodolistDialog() {
@@ -114,13 +114,14 @@ export default {
         },
         /* 添加todolist */
         async addTodoList(newTodolist) {
-            let res = await addGistFile(GIST_TODOLIST, newTodolist);
+            let res = await GistApi.addGistFile(GIST_TODOLIST, newTodolist);
             if (res.status === 200) {
                 let msg =
                     this.addTagDialogConfig.options.type === 'create'
                         ? '新Todolist添加成功！'
                         : '更改Todolist配置成功！';
                 this.$message.success(msg);
+                console.log(res);
                 this.todolists = getGistFiles(res);
             } else {
                 let msg =
@@ -132,7 +133,7 @@ export default {
         },
         /* 删除todolist */
         async deleteTodolist(gistFileName) {
-            let res = await deleteGistFile(GIST_TODOLIST, gistFileName);
+            let res = await GistApi.deleteGistFile(GIST_TODOLIST, gistFileName);
             if (res.status === 200) {
                 this.$message.success('Todolist删除成功！');
                 this.todolists = getGistFiles(res);
@@ -161,27 +162,47 @@ export default {
                 todolist = JSON.parse(
                     this.todolists[this.selectedTodolistName].content
                 );
-            if (!todolist.todolistContent[todayDate]) {
-                todolist.todolistContent[todayDate] = {
-                    todolistItemName: todayDate,
+            // 未选中Block，则把当日的Block设为选中
+            if (!this.selectedBlockName) {
+                this.setSelectedBlockName(todayDate);
+            }
+            // 当日Block不存在，则初始化一个
+            if (!todolist.todolistContent[this.selectedBlockName]) {
+                todolist.todolistContent[this.selectedBlockName] = {
+                    todolistItemName: this.selectedBlockName,
                     todolistItemContent: [],
                     createdTime: new Date().valueOf(),
                     lastModifiedTime: new Date().valueOf()
                 };
             }
-            todolist.todolistContent[todayDate].todolistItemContent.push(
-                newTodolistItem
-            );
             todolist.todolistContent[
-                todayDate
+                this.selectedBlockName
+            ].todolistItemContent.push(newTodolistItem);
+            todolist.todolistContent[
+                this.selectedBlockName
             ].lastModifiedTime = new Date().valueOf();
 
-            let res = await editGistFile(GIST_TODOLIST, todolist);
+            let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);
             if (res.status === 200) {
                 this.$message.success('添加Todolist Item成功！');
                 this.todolists = getGistFiles(res);
             } else {
                 this.$message.error('添加Todolist Item失败！');
+            }
+        },
+        /*  */
+        async deleteBlock(deleteBlockKey) {
+            let todolist = JSON.parse(
+                this.todolists[this.selectedTodolistName].content
+            );
+            delete todolist.todolistContent[deleteBlockKey];
+
+            let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);
+            if (res.status === 200) {
+                this.$message.success('Block「删除」成功！');
+                this.todolists = getGistFiles(res);
+            } else {
+                this.$message.error('Block「删除」失败！');
             }
         },
         /*  */
@@ -195,7 +216,7 @@ export default {
                 'todolistItemContent'
             ][index] = item;
 
-            let res = await editGistFile(GIST_TODOLIST, todolist);
+            let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);
             if (res.status === 200) {
                 this.$message.success('Todolist Item「更改状态」成功！');
                 this.todolists = getGistFiles(res);
@@ -215,7 +236,7 @@ export default {
                 'todolistItemContent'
             ].splice(index, 1);
 
-            let res = await editGistFile(GIST_TODOLIST, todolist);
+            let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);
             if (res.status === 200) {
                 this.$message.success('Todolist Item「删除」成功！');
                 this.todolists = getGistFiles(res);
@@ -248,8 +269,10 @@ export default {
 }
 .container-todolist {
     width: 100%;
+    height: 100%;
     display: flex;
     align-items: flex-start;
+    // overflow-y: scroll;
     .container-todolist-nav {
         width: 200px;
         flex-shrink: 0;
@@ -259,16 +282,19 @@ export default {
     }
     .container-todolist-detail {
         width: calc(100% - 200px - 300px);
-        min-height: 600px;
+        height: calc(100% - 12px);
+        box-sizing: border-box;
         // flex-grow: 1;
         margin: 6px 6px 6px 0;
+        padding: 5px;
         border-radius: 2px;
         .common-boxShadow-mixin();
     }
     .container-todolist-editor {
         width: 300px;
-        min-height: 400px;
-        margin: 6px 0 0 0;
+        min-height: 300px;
+        max-height: calc(100% - 12px);
+        margin: 6px 0 6px 0;
         .common-boxShadow-mixin();
     }
 }

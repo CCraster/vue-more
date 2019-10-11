@@ -6,8 +6,14 @@
         @click="handleTodolistRagClicked(todolistContent.fileName)"
     >
         <span>{{ todolistContent.fileName }}</span>
-        <i class="el-icon-circle-close" @click="handleDeleteIconClicked"></i>
-        <i class="el-icon-setting" @click="handleSettingIconClicked"></i>
+        <i
+            class="el-icon-circle-close common-icon-animation"
+            @click="handleDeleteIconClicked"
+        ></i>
+        <i
+            class="el-icon-setting common-icon-animation"
+            @click="handleSettingIconClicked"
+        ></i>
     </div>
 </template>
 
@@ -85,15 +91,6 @@ export default {
         float: right;
         font-size: 18px;
         line-height: 30px;
-        transition: opacity 0.5s, transform 0.5s;
-    }
-    & i:hover {
-        cursor: pointer;
-        transform: rotate(90deg);
-        font-weight: bold;
-    }
-    & i:active {
-        font-size: 16px;
     }
     &:hover {
         box-shadow: 4px 1px 5px #aaa;

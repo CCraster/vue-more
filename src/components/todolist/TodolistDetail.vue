@@ -41,9 +41,15 @@ export default {
 }
 .todolistDetail {
     display: flex;
+    flex-flow: row wrap;
     align-content: flex-start;
+    // justify-content: flex-start;
     // align-items: flex-start;
-    flex-wrap: wrap;
+
+    // column-count: 3;
+    // column-width: 200px;
+    // column-gap: 5px;
+    overflow: scroll;
 }
 .hasNoSelectedTodolist {
     display: flex;

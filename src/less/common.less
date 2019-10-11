@@ -18,3 +18,15 @@ body {
     box-sizing: border-box;
     border-left: 3px solid #007add;
 }
+/* 通用icon样式 */
+.common-icon-animation {
+    transition: opacity 0.5s, transform 0.5s;
+    &:hover {
+        cursor: pointer;
+        transform: rotate(90deg);
+        font-weight: bold;
+    }
+    &:active {
+        transform: scale(0.9);
+    }
+}

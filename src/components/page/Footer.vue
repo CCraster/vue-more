@@ -1,6 +1,6 @@
 <template>
     <div class="container-footer">
-        <span>Today is less, tomorrow will more.</span>
+        <span>Today is little, tomorrow will more.</span>
         <span>Copyright© 2019</span>
     </div>
 </template>
