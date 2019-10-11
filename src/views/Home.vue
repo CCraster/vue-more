@@ -107,7 +107,7 @@ export default {
         }
         .header-menu {
             flex-grow: 1;
-            margin: 0 300px 0 50px;
+            margin: 0 0px 0 50px;
             font-weight: bold;
         }
         .header-user {

@@ -9,7 +9,6 @@ const service = axios.create({
 
 service.interceptors.request.use(
     config => {
-        // let token = '09807f065b245472b2ef4f6816148dd8899d27de';
         let token = store.state.token.token;
         if (token) {
             let sp = '?';
