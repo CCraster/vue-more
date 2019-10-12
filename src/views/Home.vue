@@ -24,7 +24,19 @@
                     >提交</el-button
                 >
             </div>
-            <div class="header-user">Hi, {{ loginUserName }}!</div>
+            <div class="header-user">
+                <el-dropdown @command="handleUserLogout">
+                    <span class="login-user-name">
+                        Hi, {{ loginUserName }}
+                        <i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="logout"
+                            >退出</el-dropdown-item
+                        >
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </div>
         </div>
         <div class="home-main">
             <component :is="menus[activeMenu]"></component>
@@ -38,10 +50,11 @@
 <script>
 import { mapState } from 'vuex';
 import store from '@/store/';
+import Cookie from '@/common/cookie';
 import Footer from '@/components/page/Footer';
 import TodoPage from '@/components/page/TodoPage';
 import Todolist from '@/components/todolist/Todolist';
-import { ROOT_MENU, GUEST_MENU, USER_TYPE } from '@/constants/';
+import { ROOT_MENU, GUEST_MENU, USER_KEY, USER_TYPE } from '@/constants/';
 export default {
     name: 'Home',
     components: {
@@ -86,6 +99,10 @@ export default {
         },
         handleSubmitToken() {
             this.$store.dispatch('Authentication', this.accessToken);
+        },
+        handleUserLogout() {
+            Cookie.remove(USER_KEY);
+            this.$router.go(0); // 退出登陆后刷新页面
         }
     }
 };
@@ -115,10 +132,26 @@ export default {
             margin: 0 0px 0 50px;
             font-weight: bold;
         }
+        .header-token {
+            width: 200px;
+        }
         .header-user {
-            line-height: 60px;
+            display: flex;
+            align-items: center;
             font-weight: bold;
             color: @color-font;
+            .login-user-name {
+                color: #fff;
+                &:hover {
+                    i {
+                        transform: rotate(90deg);
+                    }
+                }
+                & i {
+                    font-weight: bold;
+                    transition: all 0.3s;
+                }
+            }
         }
     }
     .home-main {

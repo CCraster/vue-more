@@ -8,6 +8,8 @@
         class="container-todolist-items"
     >
         <div class="todolist-items-title">
+            <i v-if="!isBlockItemAllFinished" class="el-icon-warning"></i>
+            <!-- <i v-else class="el-icon-success" :style="{ color: rgbaOpacityReset(todolistColor, 1)}"></i> -->
             {{ singleTodolist.todolistItemName }}
             <i
                 class="el-icon-circle-close items-title-deleteIcon common-icon-animation"
@@ -27,16 +29,14 @@
             >
         </div>
         <div class="todolist-editTime">
-            <span
-                >创建时间：{{
-                    timeValueToLocal(singleTodolist.createdTime)
-                }}</span
-            >
-            <span
-                >最后修改：{{
+            <span>
+                创建时间：{{ timeValueToLocal(singleTodolist.createdTime) }}
+            </span>
+            <span>
+                最后修改：{{
                     timeValueToLocal(singleTodolist.lastModifiedTime)
-                }}</span
-            >
+                }}
+            </span>
         </div>
     </div>
 </template>
@@ -63,7 +63,18 @@ export default {
         }
     },
     computed: {
-        ...mapState(['selectedBlockName'])
+        ...mapState(['selectedBlockName']),
+        isBlockItemAllFinished() {
+            let flag = true,
+                items = this.singleTodolist.todolistItemContent;
+            items.forEach(item => {
+                if (item.finished === false) {
+                    flag = false;
+                    return flag;
+                }
+            });
+            return flag;
+        }
     },
     methods: {
         ...mapMutations(['setSelectedBlockName']),
@@ -145,6 +156,7 @@ export default {
         flex-direction: column;
         align-items: flex-end;
         margin: 5px 0 0 0;
+        color: #555;
         & span {
             // font-style: italic;
             font-size: 12px;
