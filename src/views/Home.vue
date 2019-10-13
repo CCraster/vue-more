@@ -18,11 +18,32 @@
                     >{{ menu.name }}</el-menu-item
                 >
             </el-menu>
-            <div class="header-token">
-                <el-input v-model="accessToken" size="small"></el-input>
-                <el-button @click="handleSubmitToken" size="small"
-                    >提交</el-button
+            <div
+                v-click-outside="handleTokenClickOutside"
+                :class="{ 'header-token-collapse': isTokenElementCollapse }"
+                class="header-token"
+                @click="handleTokenContainerClicked"
+            >
+                <div
+                    class="header-token-submit"
+                    :class="{ 'display-none': isTokenElementCollapse }"
                 >
+                    <el-input
+                        class="token-input"
+                        v-model="accessToken"
+                        size="small"
+                    ></el-input>
+                    <el-button @click.stop="handleSubmitToken" size="small"
+                        >绑定</el-button
+                    >
+                </div>
+                <div
+                    class="header-token-tip"
+                    :class="{ 'display-none': !isTokenElementCollapse }"
+                >
+                    <span>token</span>
+                    <i class="el-icon-success"></i>
+                </div>
             </div>
             <div class="header-user">
                 <el-dropdown @command="handleUserLogout">
@@ -48,6 +69,7 @@
 </template>
 
 <script>
+import ClickOutside from 'vue-click-outside';
 import { mapState } from 'vuex';
 import store from '@/store/';
 import Cookie from '@/common/cookie';
@@ -68,8 +90,12 @@ export default {
                 todolist: Todolist,
                 aboutme: TodoPage
             },
-            accessToken: store.state.token.token
+            accessToken: store.state.token.token,
+            isTokenElementCollapse: true
         };
+    },
+    directives: {
+        ClickOutside
     },
     mounted() {
         console.log(this.loginUserType);
@@ -103,6 +129,13 @@ export default {
         handleUserLogout() {
             Cookie.remove(USER_KEY);
             this.$router.go(0); // 退出登陆后刷新页面
+        },
+        /* 通过控制class，token div点击动画 */
+        handleTokenContainerClicked() {
+            this.isTokenElementCollapse = !this.isTokenElementCollapse;
+        },
+        handleTokenClickOutside() {
+            this.isTokenElementCollapse = true;
         }
     }
 };
@@ -119,6 +152,8 @@ export default {
     height: 100%;
     .home-header {
         // background-color: #2196f3;
+        display: flex;
+        align-items: center;
         background-color: #007add;
         padding: 0px 15%;
         height: 60px;
@@ -134,6 +169,39 @@ export default {
         }
         .header-token {
             width: 200px;
+            height: 40px;
+            box-sizing: border-box;
+            margin-right: 10px;
+            padding: 5px 5px;
+            transition: all 0.3s;
+            background-color: rgb(0, 89, 255);
+            .header-token-submit {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                .token-input {
+                    // width: 80px;
+                }
+            }
+            .header-token-tip {
+                color: #fff;
+                font-weight: bold;
+                font-size: 12px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                & span {
+                    transform: scale(0.9);
+                }
+            }
+            .display-none {
+                display: none;
+            }
+        }
+        /* token div缩小的样式 */
+        .header-token-collapse {
+            width: 40px;
+            border-radius: 50%;
         }
         .header-user {
             display: flex;
