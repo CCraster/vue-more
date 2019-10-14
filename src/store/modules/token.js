@@ -44,6 +44,14 @@ export default {
                     }
                 })
                 .catch(() => {});
+        },
+        Cancellation({ commit }) {
+            commit('REMOVE_TOKEN');
+            Vue.prototype.$notify({
+                title: '成功',
+                message: 'Token解绑成功',
+                type: 'success'
+            });
         }
     }
 };

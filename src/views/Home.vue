@@ -28,13 +28,18 @@
                     class="header-token-submit"
                     :class="{ 'display-none': isTokenElementCollapse }"
                 >
-                    <el-input
-                        class="token-input"
-                        v-model="accessToken"
-                        size="small"
-                    ></el-input>
-                    <el-button @click.stop="handleSubmitToken" size="small"
+                    <div @click.stop>
+                        <el-input
+                            class="token-input"
+                            v-model="accessToken"
+                            size="small"
+                        ></el-input>
+                    </div>
+                    <el-button @click.stop="handleTokenBind" size="small"
                         >绑定</el-button
+                    >
+                    <el-button @click.stop="handleTokenDebind" size="small"
+                        >解绑</el-button
                     >
                 </div>
                 <div
@@ -42,7 +47,8 @@
                     :class="{ 'display-none': !isTokenElementCollapse }"
                 >
                     <span>token</span>
-                    <i class="el-icon-success"></i>
+                    <i v-if="isTokenBinded" class="el-icon-success"></i>
+                    <i v-else class="el-icon-warning"></i>
                 </div>
             </div>
             <div class="header-user">
@@ -101,7 +107,7 @@ export default {
         console.log(this.loginUserType);
     },
     computed: {
-        ...mapState(['loginUserType']),
+        ...mapState(['loginUserType', 'token']),
         userMenu() {
             return this.loginUserType === USER_TYPE.ROOT
                 ? ROOT_MENU
@@ -112,10 +118,10 @@ export default {
         },
         loginUserName() {
             return this.loginUserType === USER_TYPE.ROOT ? 'Craster' : 'Guest';
+        },
+        isTokenBinded() {
+            return this.token.token && true;
         }
-        // accessToken() {
-        //     return this.token.token;
-        // }
     },
     methods: {
         // ...mapMutations(['SET_TOKEN']),
@@ -123,8 +129,11 @@ export default {
             if (this.activeMenu === menuName) return;
             this.$router.push(menuName);
         },
-        handleSubmitToken() {
+        handleTokenBind() {
             this.$store.dispatch('Authentication', this.accessToken);
+        },
+        handleTokenDebind() {
+            this.$store.dispatch('Cancellation');
         },
         handleUserLogout() {
             Cookie.remove(USER_KEY);
