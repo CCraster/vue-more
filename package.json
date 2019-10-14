@@ -22,6 +22,8 @@
         "vuex": "^3.0.1"
     },
     "devDependencies": {
+        "@commitlint/cli": "^8.2.0",
+        "@commitlint/config-conventional": "^8.2.0",
         "@vue/cli-plugin-babel": "^3.11.0",
         "@vue/cli-plugin-eslint": "^3.11.0",
         "@vue/cli-service": "^3.11.0",
@@ -36,6 +38,11 @@
         "lint-staged": "^9.2.5",
         "prettier": "^1.18.2",
         "vue-template-compiler": "^2.6.10"
+    },
+    "husky": {
+        "hooks": {
+            "commit-msg": "commitlint -e $GIT_PARAMS"
+        }
     },
     "lint-staged": {
         "src/**/*.{js,json,vue,css}": [
