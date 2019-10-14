@@ -2,6 +2,7 @@
 export const SERVER = 'https://api.github.com';
 
 /*  */
+export const TOKEN_KEY = 'TOKEN_KEY';
 export const USER_KEY = 'USER_KEY';
 export const USER_TYPE = {
     ROOT: 'ROOT',

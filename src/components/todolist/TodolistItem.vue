@@ -1,11 +1,13 @@
 <template>
     <div class="container-item">
         <input
+            :id="checkboxId"
             type="checkbox"
+            class="item-checkbox"
             :checked="itemContent.finished"
             @change="handleItemChecked"
         />
-        <!-- <span contenteditable="true" v-model="itemContent.itemContent"></span> -->
+        <label :for="checkboxId"></label>
         <span
             contenteditable="true"
             class="item-editable"
@@ -18,7 +20,7 @@
             v-model="itemContent.itemContent"
         ></textarea>-->
         <i
-            class="el-icon-circle-close"
+            class="el-icon-circle-close item-delete-icon common-icon-animation"
             @click="handleDeleteItemIconClicked"
         ></i>
     </div>
@@ -38,6 +40,11 @@ export default {
             type: Number
         }
     },
+    computed: {
+        checkboxId() {
+            return 'item-checkbox_' + this.itemIndex;
+        }
+    },
     methods: {
         handleItemChecked(e) {
             this.itemContent.finished = e.target.checked;
@@ -50,11 +57,11 @@ export default {
         /* 处理item内容改变事件 */
         handleItemLoseFocus(e) {
             // this.itemContent.itemContent = e.target.innerText;
-            // console.log(this.itemContent);
+            // console.log(e);
 
             if (e.target.innerText !== this.itemContent.itemContent) {
-                console.log('change');
                 this.itemContent.itemContent = e.target.innerText;
+                e.target.innerHTML = e.target.innerText;
                 eventBus.$emit(
                     EVENT_EDIT_ITEM,
                     this.itemContent,
@@ -70,9 +77,43 @@ export default {
 .container-item {
     display: flex;
     align-items: center;
+    .item-checkbox {
+        display: none;
+        & + label {
+            width: 18px;
+            height: 18px;
+            margin-left: 5px;
+            line-height: 18px;
+            font-size: 14px;
+            box-sizing: border-box;
+            cursor: pointer;
+            color: #007add;
+            border-radius: 2px;
+            font-weight: bold;
+            border: 2px solid #007add;
+            // border: 2px solid #666;
+            text-align: center;
+        }
+        &:checked + label::before {
+            content: '\2713';
+        }
+    }
     .item-editable {
-        // width: 100px;
         white-space: pre-wrap;
+        margin: 0 4px 2px 4px;
+        padding: 0px 4px;
+        border-radius: 2px;
+        font-size: 14px;
+        outline: none;
+        border: 1px solid #fff;
+        &:hover,
+        &:focus {
+            border: 1px solid #007add;
+            box-shadow: 0px 0px 2px #007add;
+        }
+    }
+    .item-delete-icon {
+        font-size: 16px;
     }
 }
 </style>

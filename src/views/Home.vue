@@ -28,17 +28,25 @@
                     class="header-token-submit"
                     :class="{ 'display-none': isTokenElementCollapse }"
                 >
-                    <div @click.stop>
+                    <div class="token-input" @click.stop>
                         <el-input
-                            class="token-input"
                             v-model="accessToken"
                             size="small"
+                            :disabled="token.token"
                         ></el-input>
                     </div>
-                    <el-button @click.stop="handleTokenBind" size="small"
+                    <el-button
+                        @click.stop="handleTokenBind"
+                        :disabled="token.token"
+                        size="small"
+                        style="margin-left: 5px"
                         >绑定</el-button
                     >
-                    <el-button @click.stop="handleTokenDebind" size="small"
+                    <el-button
+                        @click.stop="handleTokenDebind"
+                        :disabled="!token.token"
+                        size="small"
+                        style="margin-left: 2px;"
                         >解绑</el-button
                     >
                 </div>
@@ -77,12 +85,18 @@
 <script>
 import ClickOutside from 'vue-click-outside';
 import { mapState } from 'vuex';
-import store from '@/store/';
+// import store from '@/store/';
 import Cookie from '@/common/cookie';
 import Footer from '@/components/page/Footer';
 import TodoPage from '@/components/page/TodoPage';
 import Todolist from '@/components/todolist/Todolist';
-import { ROOT_MENU, GUEST_MENU, USER_KEY, USER_TYPE } from '@/constants/';
+import {
+    ROOT_MENU,
+    GUEST_MENU,
+    TOKEN_KEY,
+    USER_KEY,
+    USER_TYPE
+} from '@/constants/';
 export default {
     name: 'Home',
     components: {
@@ -96,7 +110,7 @@ export default {
                 todolist: Todolist,
                 aboutme: TodoPage
             },
-            accessToken: store.state.token.token,
+            accessToken: Cookie.getAttribute(TOKEN_KEY) || '',
             isTokenElementCollapse: true
         };
     },
@@ -134,6 +148,7 @@ export default {
         },
         handleTokenDebind() {
             this.$store.dispatch('Cancellation');
+            this.accessToken = '';
         },
         handleUserLogout() {
             Cookie.remove(USER_KEY);
@@ -177,7 +192,7 @@ export default {
             font-weight: bold;
         }
         .header-token {
-            width: 200px;
+            width: 300px;
             height: 40px;
             box-sizing: border-box;
             margin-right: 10px;
@@ -188,8 +203,10 @@ export default {
                 height: 100%;
                 display: flex;
                 align-items: center;
+
                 .token-input {
                     // width: 80px;
+                    flex-grow: 1;
                 }
             }
             .header-token-tip {
