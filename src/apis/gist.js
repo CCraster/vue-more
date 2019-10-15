@@ -10,9 +10,11 @@ export default {
         });
     },
     addGistFile(gistId, data) {
+        let oldFileName = data.oldFileName;
+        delete data.oldFileName;
         let data_reconstruct = {
             files: {
-                [data.oldFileName]: {
+                [oldFileName]: {
                     content: JSON.stringify(data),
                     filename: data.fileName
                 }

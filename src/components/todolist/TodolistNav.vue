@@ -10,7 +10,7 @@
         </div>
         <div class="todolist-nav-add">
             <i
-                class="el-icon-circle-plus-outline"
+                class="el-icon-circle-plus-outline common-icon-animation"
                 @click="handleAddTodolistIconClicked"
             ></i>
         </div>
@@ -56,13 +56,7 @@ export default {
             transition: transform 0.5s;
         }
         & i:hover {
-            cursor: pointer;
             color: #f67505;
-            font-weight: bold;
-            transform: rotate(90deg);
-        }
-        & i:active {
-            font-size: 90%;
         }
     }
 }

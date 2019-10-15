@@ -8,11 +8,11 @@
         <span>{{ todolistContent.fileName }}</span>
         <i
             class="el-icon-circle-close common-icon-animation"
-            @click="handleDeleteIconClicked"
+            @click.stop="handleDeleteIconClicked"
         ></i>
         <i
             class="el-icon-setting common-icon-animation"
-            @click="handleSettingIconClicked"
+            @click.stop="handleSettingIconClicked"
         ></i>
     </div>
 </template>
@@ -77,10 +77,10 @@ export default {
     font-size: 14px;
     line-height: 30px;
     transition: all 0.3s;
-    // background-color: rgba(0, 122, 221, 0.8);
     &.selectedRag {
-        // width: 150px;
-        left: 10px;
+        width: 190px;
+        box-shadow: 2px 0px 8px 1px rgba(0, 0, 0, 0.5);
+        // left: 10px;
     }
     & span {
         font-weight: 450;
@@ -93,7 +93,7 @@ export default {
         line-height: 30px;
     }
     &:hover {
-        box-shadow: 4px 1px 5px #aaa;
+        box-shadow: 2px 0px 8px 1px rgba(0, 0, 0, 0.5);
     }
     &:hover i {
         opacity: 1;
