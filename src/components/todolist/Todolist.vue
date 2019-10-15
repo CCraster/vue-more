@@ -61,7 +61,7 @@ export default {
     computed: {
         ...mapState(['selectedTodolistName', 'selectedBlockName']),
         selectedBlockData() {
-            if (this.selectedTodolistName) {
+            if (this.todolists && this.todolists[this.selectedTodolistName]) {
                 return JSON.parse(
                     this.todolists[this.selectedTodolistName].content
                 )['todolistContent'][this.selectedBlockName];

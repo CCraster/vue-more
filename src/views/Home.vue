@@ -74,7 +74,9 @@
             </div>
         </div>
         <div class="home-main">
-            <component :is="menus[activeMenu]"></component>
+            <keep-alive>
+                <component :is="menus[activeMenu]"></component>
+            </keep-alive>
         </div>
         <div class="home-footer">
             <Footer />

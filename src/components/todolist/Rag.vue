@@ -36,12 +36,37 @@ export default {
     },
     methods: {
         ...mapMutations(['setSelectedTodolistName']),
+        /* 对于选中的todolist，自动滚动到底部 */
+        scrollToBottom() {
+            this.$nextTick(() => {
+                let todolistDetailElement = document.getElementById(
+                    'div-todolistDetailContainer'
+                );
+                // // 防止只加载提示div，获取不到元素的报错
+                // if (todolistDetailElement) {
+                //     todolistDetailElement.scrollTop =
+                //         todolistDetailElement.scrollHeight;
+                // }
+                if (
+                    todolistDetailElement &&
+                    !(todolistDetailElement.scrollTop > 0)
+                ) {
+                    this.$anime({
+                        targets: todolistDetailElement,
+                        easing: 'easeInOutCubic',
+                        duration: '1500',
+                        scrollTop: [0, todolistDetailElement.scrollHeight]
+                    });
+                }
+            });
+        },
         handleTodolistRagClicked(todolistName) {
             if (todolistName === this.selectedTodolistName) {
                 this.setSelectedTodolistName('');
             } else {
                 this.setSelectedTodolistName(todolistName);
             }
+            this.scrollToBottom();
         },
         handleDeleteIconClicked() {
             this.$confirm(

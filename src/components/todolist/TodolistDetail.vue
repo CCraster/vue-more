@@ -1,5 +1,9 @@
 <template>
-    <div class="todolistDetail" v-if="todolistData">
+    <div
+        id="div-todolistDetailContainer"
+        class="todolistDetail"
+        v-if="todolistData"
+    >
         <TodolistBlock
             v-for="(singleTodolist, key) in todolistContent.todolistContent"
             :key="key"
@@ -43,6 +47,7 @@ export default {
     display: flex;
     flex-flow: row wrap;
     align-content: flex-start;
+    transition: all 3s;
     // justify-content: flex-start;
     // align-items: flex-start;
 

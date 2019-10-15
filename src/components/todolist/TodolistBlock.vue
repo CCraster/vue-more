@@ -30,9 +30,11 @@
             >
         </div>
         <div class="todolist-editTime">
-            <span>
-                创建时间：{{ timeValueToLocal(singleTodolist.createdTime) }}
-            </span>
+            <span
+                >创建时间：{{
+                    timeValueToLocal(singleTodolist.createdTime)
+                }}</span
+            >
             <span>
                 最后修改：{{
                     timeValueToLocal(singleTodolist.lastModifiedTime)
@@ -123,7 +125,7 @@ export default {
     // width: calc(100% / 4);
     position: relative;
     min-width: 200px;
-    // max-width: 300px;
+    max-width: 300px;
     flex-grow: 1;
     margin: 5px 5px 0px 0px;
     padding: 5px 10px 45px 10px;
