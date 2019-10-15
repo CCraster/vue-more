@@ -51,6 +51,7 @@ export default {
                     type: '',
                     title: '',
                     todolistName: '',
+                    todolistType: '',
                     todolistColor: '',
                     todolistContent: {}
                 }
@@ -107,6 +108,7 @@ export default {
                 type: 'create',
                 title: '新建Todo List',
                 todolistName: '',
+                todolistType: 'todolist',
                 todolistColor: 'rgba(0, 122, 221, 0.8)',
                 todolistContent: {}
             };
@@ -121,7 +123,6 @@ export default {
                         ? '新Todolist添加成功！'
                         : '更改Todolist配置成功！';
                 this.$message.success(msg);
-                console.log(res);
                 this.todolists = getGistFiles(res);
             } else {
                 let msg =
@@ -151,6 +152,7 @@ export default {
                 title: '更改配置',
                 oldTodolistName: reconfigTodolistContent.fileName,
                 todolistName: reconfigTodolistContent.fileName,
+                todolistType: reconfigTodolistContent.todolistType,
                 todolistColor: reconfigTodolistContent.todolistColor,
                 todolistContent: reconfigTodolistContent.todolistContent
             };
