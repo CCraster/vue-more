@@ -32,19 +32,19 @@
                         <el-input
                             v-model="accessToken"
                             size="small"
-                            :disabled="token.token"
+                            :disabled="isTokenBinded"
                         ></el-input>
                     </div>
                     <el-button
                         @click.stop="handleTokenBind"
-                        :disabled="token.token"
+                        :disabled="isTokenBinded"
                         size="small"
                         style="margin-left: 5px"
                         >绑定</el-button
                     >
                     <el-button
                         @click.stop="handleTokenDebind"
-                        :disabled="!token.token"
+                        :disabled="!isTokenBinded"
                         size="small"
                         style="margin-left: 2px;"
                         >解绑</el-button
@@ -134,7 +134,7 @@ export default {
             return this.loginUserType === USER_TYPE.ROOT ? 'Craster' : 'Guest';
         },
         isTokenBinded() {
-            return this.token.token && true;
+            return !!this.token.token;
         }
     },
     methods: {

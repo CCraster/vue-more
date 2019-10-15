@@ -5,6 +5,7 @@
             borderLeft: `2px solid ${rgbaOpacityReset(todolistColor, 1)}`
         }"
         @click="handleBlockSelected"
+        :class="{ 'common-div-highlight': isBlockSelected }"
         class="container-todolist-items"
     >
         <div class="todolist-items-title">
@@ -29,9 +30,11 @@
             >
         </div>
         <div class="todolist-editTime">
-            <span>
-                创建时间：{{ timeValueToLocal(singleTodolist.createdTime) }}
-            </span>
+            <span
+                >创建时间：{{
+                    timeValueToLocal(singleTodolist.createdTime)
+                }}</span
+            >
             <span>
                 最后修改：{{
                     timeValueToLocal(singleTodolist.lastModifiedTime)
@@ -64,6 +67,11 @@ export default {
     },
     computed: {
         ...mapState(['selectedBlockName']),
+        isBlockSelected() {
+            return (
+                this.singleTodolist.todolistItemName === this.selectedBlockName
+            );
+        },
         isBlockItemAllFinished() {
             let flag = true,
                 items = this.singleTodolist.todolistItemContent;
@@ -117,10 +125,15 @@ export default {
     // width: calc(100% / 4);
     position: relative;
     min-width: 200px;
-    max-width: 300px;
+    // max-width: 300px;
+    flex-grow: 1;
     margin: 5px 5px 0px 0px;
     padding: 5px 10px 45px 10px;
     border-radius: 4px;
+    transition: all 0.3s;
+    &:hover {
+        box-shadow: 0px 0 6px 2px #666;
+    }
     // break-inside: avoid;
     // color: #fff;
     .todolist-items-title {
