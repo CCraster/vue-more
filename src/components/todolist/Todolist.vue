@@ -288,7 +288,6 @@ export default {
         box-sizing: border-box;
         // flex-grow: 1;
         margin: 6px 6px 6px 0;
-        padding: 5px;
         border-radius: 2px;
         .common-boxShadow-mixin();
     }

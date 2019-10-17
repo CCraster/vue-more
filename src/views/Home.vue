@@ -23,6 +23,7 @@
                 :class="{ 'header-token-collapse': isTokenElementCollapse }"
                 class="header-token"
                 @click="handleTokenContainerClicked"
+                v-show="isRootUserLogin"
             >
                 <div
                     class="header-token-submit"
@@ -62,7 +63,7 @@
             <div class="header-user">
                 <el-dropdown @command="handleUserLogout">
                     <span class="login-user-name">
-                        Hi, {{ loginUserName }}
+                        Hi, {{ isRootUserLogin ? 'Craster' : 'Guest' }}
                         <i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
@@ -132,8 +133,8 @@ export default {
         activeMenu() {
             return this.$route.params.menuName;
         },
-        loginUserName() {
-            return this.loginUserType === USER_TYPE.ROOT ? 'Craster' : 'Guest';
+        isRootUserLogin() {
+            return this.loginUserType === USER_TYPE.ROOT;
         },
         isTokenBinded() {
             return !!this.token.token;

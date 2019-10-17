@@ -5,6 +5,7 @@
             borderLeft: `2px solid ${rgbaOpacityReset(todolistColor, 1)}`
         }"
         @click="handleBlockSelected"
+        @dblclick.native="handleBlockSelected"
         :class="{ 'common-div-highlight': isBlockSelected }"
         class="container-todolist-items"
     >
@@ -30,11 +31,9 @@
             >
         </div>
         <div class="todolist-editTime">
-            <span
-                >创建时间：{{
-                    timeValueToLocal(singleTodolist.createdTime)
-                }}</span
-            >
+            <span>
+                创建时间：{{ timeValueToLocal(singleTodolist.createdTime) }}
+            </span>
             <span>
                 最后修改：{{
                     timeValueToLocal(singleTodolist.lastModifiedTime)
@@ -93,10 +92,11 @@ export default {
         },
         handleBlockSelected() {
             if (
-                this.singleTodolist.todolistItemName === this.selectedBlockName
+                !(
+                    this.singleTodolist.todolistItemName ===
+                    this.selectedBlockName
+                )
             ) {
-                this.setSelectedBlockName('');
-            } else {
                 this.setSelectedBlockName(this.singleTodolist.todolistItemName);
             }
         },
@@ -127,7 +127,7 @@ export default {
     min-width: 200px;
     max-width: 300px;
     flex-grow: 1;
-    margin: 5px 5px 0px 0px;
+    margin: 0px 5px 5px 0px;
     padding: 5px 10px 45px 10px;
     border-radius: 4px;
     transition: all 0.3s;

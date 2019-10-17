@@ -40,13 +40,8 @@ export default {
         scrollToBottom() {
             this.$nextTick(() => {
                 let todolistDetailElement = document.getElementById(
-                    'div-todolistDetailContainer'
+                    'div-todolistDetailContent'
                 );
-                // // 防止只加载提示div，获取不到元素的报错
-                // if (todolistDetailElement) {
-                //     todolistDetailElement.scrollTop =
-                //         todolistDetailElement.scrollHeight;
-                // }
                 if (
                     todolistDetailElement &&
                     !(todolistDetailElement.scrollTop > 0)
