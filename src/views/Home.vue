@@ -92,6 +92,7 @@ import { mapState } from 'vuex';
 import Cookie from '@/common/cookie';
 import Footer from '@/components/page/Footer';
 import TodoPage from '@/components/page/TodoPage';
+import ScrollAnimation from '@/components/page/ScrollAnimation';
 import Todolist from '@/components/todolist/Todolist';
 import {
     ROOT_MENU,
@@ -104,14 +105,15 @@ export default {
     name: 'Home',
     components: {
         Footer,
-        TodoPage
+        TodoPage,
+        ScrollAnimation
     },
     data() {
         return {
             menus: {
                 blog: TodoPage,
                 todolist: Todolist,
-                aboutme: TodoPage
+                aboutme: ScrollAnimation
             },
             accessToken: Cookie.getAttribute(TOKEN_KEY) || '',
             isTokenElementCollapse: true
