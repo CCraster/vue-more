@@ -7,6 +7,9 @@ export default {
     getSingleGist(gistId) {
         return request({
             url: `/gists/${gistId}`
+            // headers: {
+            //     Accept: 'application/vnd.github.v3.html+json'
+            // }
         });
     },
     addGistFile(gistId, data) {

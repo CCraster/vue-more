@@ -1,6 +1,7 @@
 <template>
     <div class="container-item">
         <input
+            v-if="!isReportTypeTodolist"
             :id="checkboxId"
             type="checkbox"
             class="item-checkbox"
@@ -20,6 +21,7 @@
             v-model="itemContent.itemContent"
         ></textarea>-->
         <i
+            v-if="!isReportTypeTodolist"
             class="el-icon-circle-close item-delete-icon common-icon-animation"
             @click="handleDeleteItemIconClicked"
         ></i>
@@ -28,6 +30,7 @@
 
 <script>
 import eventBus from '@/common/eventBus';
+import { mapState } from 'vuex';
 import { EVENT_EDIT_ITEM, EVENT_DELETE_ITEM } from '@/constants/';
 export default {
     name: 'TodolistItem',
@@ -41,8 +44,12 @@ export default {
         }
     },
     computed: {
+        ...mapState(['selectedTodolistType']),
         checkboxId() {
             return 'item-checkbox_' + this.itemIndex;
+        },
+        isReportTypeTodolist() {
+            return this.selectedTodolistType === 'report';
         }
     },
     methods: {
@@ -52,7 +59,7 @@ export default {
             eventBus.$emit(EVENT_EDIT_ITEM, this.itemContent, this.itemIndex);
         },
         handleDeleteItemIconClicked() {
-            eventBus.$emit(EVENT_DELETE_ITEM, this.itemIndex);
+            eventBus.$emit(EVENT_DELETE_ITEM, [this.itemIndex]);
         },
         /* 处理item内容改变事件 */
         handleItemLoseFocus(e) {
@@ -106,6 +113,7 @@ export default {
         font-size: 14px;
         outline: none;
         border: 1px solid #fff;
+        transition: all 0.5s;
         &:hover,
         &:focus {
             border: 1px solid #007add;

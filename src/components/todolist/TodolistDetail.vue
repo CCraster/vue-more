@@ -1,5 +1,5 @@
 <template>
-    <div class="todolistDetail" v-if="todolistData">
+    <div class="todolistDetail">
         <div class="common-content-title todolist-detail-toolContainer">
             <span>可用工具</span>
             <el-select
@@ -15,20 +15,27 @@
                 ></el-option>
             </el-select>
         </div>
-        <div id="div-todolistDetailContent" class="todolist-detail-content">
+        <div
+            v-if="JSON.stringify(todolistData) !== '{}'"
+            id="div-todolistDetailContent"
+            class="todolist-detail-content"
+        >
             <TodolistBlock
-                v-for="(singleTodolist, key) in todolistContent.todolistContent"
+                v-for="(singleTodolist, key) in todolistData.todolistContent"
                 :key="key"
                 :singleTodolist="singleTodolist"
-                :todolistColor="todolistContent.todolistColor"
+                :todolistColor="todolistData.todolistColor"
             />
         </div>
+        <!-- 未选择todolist的提示 -->
+        <div class="hasNoSelectedTodolist" v-else>暂无数据。。。</div>
     </div>
-    <div class="hasNoSelectedTodolist" v-else>未选择Todolist！</div>
 </template>
 
 <script>
+import eventBus from '@/common/eventBus';
 import TodolistBlock from './TodolistBlock';
+import { EVENT_CHANGE_TODOLIST_MODE } from '@/constants/';
 export default {
     name: 'TodolistDetail',
     components: {
@@ -63,11 +70,13 @@ export default {
             ]
         };
     },
-    computed: {
-        todolistContent() {
-            return this.todolistData
-                ? JSON.parse(this.todolistData.content)
-                : {};
+    computed: {},
+    watch: {
+        todolistMode: {
+            deep: true,
+            handler(newMode) {
+                eventBus.$emit(EVENT_CHANGE_TODOLIST_MODE, newMode);
+            }
         }
     }
 };
@@ -94,7 +103,7 @@ export default {
         flex-flow: row wrap;
         align-content: flex-start;
         padding: 5px 0 0px 5px;
-        transition: all 3s;
+        transition: all 0.3s;
         overflow: scroll;
     }
 }

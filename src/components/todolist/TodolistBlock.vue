@@ -12,28 +12,30 @@
         <div class="todolist-items-title">
             <i v-if="!isBlockItemAllFinished" class="el-icon-warning"></i>
             <!-- <i v-else class="el-icon-success" :style="{ color: rgbaOpacityReset(todolistColor, 1)}"></i> -->
-            {{ singleTodolist.todolistItemName }}
+            {{ singleTodolist.title }}
             <i
                 class="el-icon-circle-close items-title-deleteIcon common-icon-animation"
                 @click="handleBlockDeleteIconClicked"
             ></i>
         </div>
         <div class="todolist-items">
-            <!-- <span>{{ index + 1 }}</span> -->
-            <!-- eslint-disable -->
             <span
-                v-for="(item, index) in singleTodolist.todolistItemContent"
+                v-for="(item, index) in singleTodolist.items"
                 :key="index"
                 :itemContent="item"
                 :class="{ 'todolist-conplete': item.finished }"
                 class="todolistItem-uneditable"
-                >{{ index + 1 + '. ' + item.itemContent }}</span
             >
+                <span v-if="isReportTypeTodolist">{{ item.itemContent }}</span>
+                <span v-else>{{ index + 1 + '. ' + item.itemContent }}</span>
+            </span>
         </div>
         <div class="todolist-editTime">
-            <span>
-                创建时间：{{ timeValueToLocal(singleTodolist.createdTime) }}
-            </span>
+            <span
+                >创建时间：{{
+                    timeValueToLocal(singleTodolist.createdTime)
+                }}</span
+            >
             <span>
                 最后修改：{{
                     timeValueToLocal(singleTodolist.lastModifiedTime)
@@ -46,7 +48,7 @@
 <script>
 import eventBus from '@/common/eventBus';
 import { mapState, mapMutations } from 'vuex';
-import { EVENT_DELETE_BLOCK } from '@/constants/';
+import { EVENT_DELETE_ITEM } from '@/constants/';
 import { timeValueToLocal } from '@/common/util';
 // import TodolistItem from './TodolistItem';
 export default {
@@ -65,15 +67,16 @@ export default {
         }
     },
     computed: {
-        ...mapState(['selectedBlockName']),
+        ...mapState(['selectedBlockName', 'selectedTodolistType']),
+        isReportTypeTodolist() {
+            return this.selectedTodolistType === 'report';
+        },
         isBlockSelected() {
-            return (
-                this.singleTodolist.todolistItemName === this.selectedBlockName
-            );
+            return this.singleTodolist.title === this.selectedBlockName;
         },
         isBlockItemAllFinished() {
             let flag = true,
-                items = this.singleTodolist.todolistItemContent;
+                items = this.singleTodolist.items;
             items.forEach(item => {
                 if (item.finished === false) {
                     flag = false;
@@ -81,6 +84,13 @@ export default {
                 }
             });
             return flag;
+        },
+        blockItemsIndex() {
+            let arr = [];
+            this.singleTodolist.items.map(item => {
+                arr.push(item.originIndex);
+            });
+            return arr;
         }
     },
     methods: {
@@ -91,26 +101,18 @@ export default {
             return rgba.slice(0, rgba.lastIndexOf(',') + 1) + opacity + ')';
         },
         handleBlockSelected() {
-            if (
-                !(
-                    this.singleTodolist.todolistItemName ===
-                    this.selectedBlockName
-                )
-            ) {
-                this.setSelectedBlockName(this.singleTodolist.todolistItemName);
+            if (!(this.singleTodolist.title === this.selectedBlockName)) {
+                this.setSelectedBlockName(this.singleTodolist.title);
             }
         },
         handleBlockDeleteIconClicked() {
             this.$confirm(
-                `确认要删除记录「${this.singleTodolist.todolistItemName}」吗，删除后将不可恢复？`,
+                `确认要删除记录「${this.singleTodolist.title}」吗，删除后将不可恢复？`,
                 '提示',
                 { type: 'warning' }
             )
                 .then(() => {
-                    eventBus.$emit(
-                        EVENT_DELETE_BLOCK,
-                        this.singleTodolist.todolistItemName
-                    );
+                    eventBus.$emit(EVENT_DELETE_ITEM, this.blockItemsIndex);
                 })
                 .catch(e => {
                     console.log(e);

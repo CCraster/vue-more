@@ -3,7 +3,7 @@
         <TodolistNav class="container-todolist-nav" :todolists="todolists" />
         <TodolistDetail
             class="container-todolist-detail"
-            :todolistData="todolists[selectedTodolistName]"
+            :todolistData="selectedTodolistData"
         />
         <TodolistEditor
             :selectedBlockData="selectedBlockData"
@@ -20,15 +20,16 @@
 <script>
 import eventBus from '@/common/eventBus';
 import { mapState, mapMutations } from 'vuex';
+import { path } from 'ramda';
 import {
     GIST_TODOLIST,
     EVENT_ADD_TODOLIST_ITEM,
     EVENT_EDIT_ITEM,
     EVENT_DELETE_ITEM,
-    EVENT_DELETE_BLOCK
+    EVENT_CHANGE_TODOLIST_MODE
 } from '@/constants/';
 import GistApi from '@/apis/gist';
-import { getGistFiles } from '@/common/util';
+import { getGistFiles, formatTodolistData } from '@/common/util';
 import AddTagDialog from '@/components/page/AddTagDialog';
 import TodolistNav from './TodolistNav';
 import TodolistDetail from './TodolistDetail';
@@ -46,6 +47,7 @@ export default {
         return {
             todolists: {},
             showAddTagDialog: false,
+            todolistShowMode: 'week',
             addTagDialogConfig: {
                 options: {
                     type: '',
@@ -60,20 +62,37 @@ export default {
     },
     computed: {
         ...mapState(['selectedTodolistName', 'selectedBlockName']),
-        selectedBlockData() {
-            if (this.todolists && this.todolists[this.selectedTodolistName]) {
-                return JSON.parse(
-                    this.todolists[this.selectedTodolistName].content
-                )['todolistContent'][this.selectedBlockName];
-            } else {
-                return {};
+        selectedTodolistData() {
+            if (path([this.selectedTodolistName])(this.todolists)) {
+                let todolistData = this.todolists[this.selectedTodolistName]
+                    .content;
+                todolistData = formatTodolistData(
+                    todolistData,
+                    this.todolistShowMode
+                );
+                return todolistData;
             }
+            return {};
+        },
+        selectedBlockData() {
+            if (
+                path(['todolistContent', this.selectedBlockName])(
+                    this.selectedTodolistData
+                )
+            ) {
+                return this.selectedTodolistData.todolistContent[
+                    this.selectedBlockName
+                ];
+            }
+            return {};
         }
     },
     watch: {
         todolists: {
             deep: true,
-            handler() {}
+            handler() {
+                // console.log('change');
+            }
         }
     },
     beforeMount() {
@@ -86,21 +105,33 @@ export default {
         eventBus.$on(EVENT_ADD_TODOLIST_ITEM, this.addTodolistItem);
         eventBus.$on(EVENT_EDIT_ITEM, this.editBlockItem);
         eventBus.$on(EVENT_DELETE_ITEM, this.deleteBlockItem);
-        eventBus.$on(EVENT_DELETE_BLOCK, this.deleteBlock);
+        eventBus.$on(EVENT_CHANGE_TODOLIST_MODE, this.changeTodolistMode);
     },
     beforeDestroy() {
         eventBus.$off('delete-todolist', this.deleteTodolist);
         eventBus.$off('reconfig-todolist', this.reconfigTodolist);
         eventBus.$off('show-add-dialog', this.showAddTodolistDialog);
         eventBus.$off(EVENT_ADD_TODOLIST_ITEM, this.addTodolistItem);
+        eventBus.$off(EVENT_EDIT_ITEM, this.editBlockItem);
+        eventBus.$off(EVENT_DELETE_ITEM, this.deleteBlockItem);
+        eventBus.$off(EVENT_CHANGE_TODOLIST_MODE, this.changeTodolistMode);
     },
     methods: {
         ...mapMutations(['setSelectedBlockName']),
         /* 获取todolist的gist */
         async getTodolist() {
+            const loading = this.$loading({
+                lock: true,
+                text: '加载中。。。',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.todolists = getGistFiles(
                 await GistApi.getSingleGist(GIST_TODOLIST)
             );
+            loading.close();
+            // console.log(await GistApi.getSingleGist(GIST_TODOLIST));
+            // console.log(typeof this.todolists['Craster'].content);
         },
         /* 增加todolist弹窗显示标志 */
         showAddTodolistDialog() {
@@ -109,8 +140,8 @@ export default {
                 title: '新建Todo List',
                 todolistName: '',
                 todolistType: 'todolist',
-                todolistColor: 'rgba(0, 122, 221, 0.8)',
-                todolistContent: {}
+                todolistColor: 'rgba(0, 122, 221, 1)',
+                todolistContent: []
             };
             this.showAddTagDialog = true;
         },
@@ -144,9 +175,8 @@ export default {
         },
         /* 监听reconfig-todolist的处理函数 */
         reconfigTodolist(reconfigTodolistName) {
-            let reconfigTodolistContent = JSON.parse(
-                this.todolists[reconfigTodolistName].content
-            );
+            let reconfigTodolistContent = this.todolists[reconfigTodolistName]
+                .content;
             this.addTagDialogConfig.options = {
                 type: 'reconfig',
                 title: '更改配置',
@@ -160,29 +190,8 @@ export default {
         },
         /* 添加todolist item */
         async addTodolistItem(newTodolistItem) {
-            let todayDate = this.getTodayDate(),
-                todolist = JSON.parse(
-                    this.todolists[this.selectedTodolistName].content
-                );
-            // 未选中Block，则把当日的Block设为选中
-            if (!this.selectedBlockName) {
-                this.setSelectedBlockName(todayDate);
-            }
-            // 当日Block不存在，则初始化一个
-            if (!todolist.todolistContent[this.selectedBlockName]) {
-                todolist.todolistContent[this.selectedBlockName] = {
-                    todolistItemName: this.selectedBlockName,
-                    todolistItemContent: [],
-                    createdTime: new Date().valueOf(),
-                    lastModifiedTime: new Date().valueOf()
-                };
-            }
-            todolist.todolistContent[
-                this.selectedBlockName
-            ].todolistItemContent.push(newTodolistItem);
-            todolist.todolistContent[
-                this.selectedBlockName
-            ].lastModifiedTime = new Date().valueOf();
+            let todolist = this.todolists[this.selectedTodolistName].content;
+            todolist.todolistContent.push(newTodolistItem);
 
             let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);
             if (res.status === 200) {
@@ -193,72 +202,42 @@ export default {
             }
         },
         /*  */
-        async deleteBlock(deleteBlockKey) {
-            let todolist = JSON.parse(
-                this.todolists[this.selectedTodolistName].content
-            );
-            delete todolist.todolistContent[deleteBlockKey];
-
-            let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);
-            if (res.status === 200) {
-                this.$message.success('Block「删除」成功！');
-                this.todolists = getGistFiles(res);
-            } else {
-                this.$message.error('Block「删除」失败！');
-            }
-        },
-        /*  */
         async editBlockItem(item, index) {
-            let todolist = JSON.parse(
-                this.todolists[this.selectedTodolistName].content
-            );
-            todolist.todolistContent[this.selectedBlockName].lastModifiedTime =
-                item.lastModifiedTime;
-            todolist.todolistContent[this.selectedBlockName][
-                'todolistItemContent'
-            ][index] = item;
+            let todolist = this.todolists[this.selectedTodolistName].content;
+            delete item['originIndex'];
+            // !!!vue 监听不到直接通过数组下标修改的变化，参考：https://juejin.im/post/5bd181036fb9a05cdb107b0d
+            todolist.todolistContent.splice(index, 1, item);
+            this.todolists[this.selectedTodolistName].content = todolist;
 
             let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);
             if (res.status === 200) {
                 this.$message.success('Todolist Item「更改状态」成功！');
-                this.todolists = getGistFiles(res);
+                // this.todolists = getGistFiles(res);
             } else {
                 this.$message.error('Todolist Item「更改状态」失败！');
             }
         },
         /*  */
-        async deleteBlockItem(index) {
-            let todolist = JSON.parse(
-                this.todolists[this.selectedTodolistName].content
+        async deleteBlockItem(deleteItemArray) {
+            let todolist = this.todolists[this.selectedTodolistName].content;
+            todolist.todolistContent = todolist.todolistContent.filter(
+                (item, index) => {
+                    return !deleteItemArray.includes(index);
+                }
             );
-            todolist.todolistContent[
-                this.selectedBlockName
-            ].lastModifiedTime = new Date().valueOf();
-            todolist.todolistContent[this.selectedBlockName][
-                'todolistItemContent'
-            ].splice(index, 1);
+            this.todolists[this.selectedTodolistName].content = todolist;
 
             let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);
             if (res.status === 200) {
                 this.$message.success('Todolist Item「删除」成功！');
-                this.todolists = getGistFiles(res);
+                // this.todolists = getGistFiles(res);
             } else {
                 this.$message.error('Todolist Item「删除」失败！');
             }
         },
-        /* 获取此时的日期，格式：20191006 */
-        getTodayDate() {
-            let today = new Date(),
-                formatLength = 2;
-            return (
-                today.getFullYear() +
-                (Array(formatLength).join('0') + (today.getMonth() + 1)).slice(
-                    -formatLength
-                ) +
-                (Array(formatLength).join('0') + today.getDate()).slice(
-                    -formatLength
-                )
-            );
+        /* 改变todolist的展示模式 */
+        changeTodolistMode(mode) {
+            this.todolistShowMode = mode;
         }
     }
 };
@@ -274,7 +253,9 @@ export default {
     height: 100%;
     display: flex;
     align-items: flex-start;
-    // overflow-y: scroll;
+    padding: 0px 2px;
+    box-sizing: border-box;
+    overflow-y: scroll;
     .container-todolist-nav {
         width: 200px;
         flex-shrink: 0;
@@ -296,6 +277,7 @@ export default {
         min-height: 300px;
         max-height: calc(100% - 12px);
         margin: 6px 0 6px 0;
+        overflow-y: scroll;
         .common-boxShadow-mixin();
     }
 }

@@ -28,14 +28,14 @@ export default {
     computed: {
         ...mapState(['selectedTodolistName']),
         todolistContent() {
-            return JSON.parse(this.todolist.content);
+            return this.todolist.content;
         },
         isSelected() {
             return this.todolist.filename === this.selectedTodolistName;
         }
     },
     methods: {
-        ...mapMutations(['setSelectedTodolistName']),
+        ...mapMutations(['setSelectedTodolistName', 'setSelectedTodolistType']),
         /* 对于选中的todolist，自动滚动到底部 */
         scrollToBottom() {
             this.$nextTick(() => {
@@ -58,8 +58,10 @@ export default {
         handleTodolistRagClicked(todolistName) {
             if (todolistName === this.selectedTodolistName) {
                 this.setSelectedTodolistName('');
+                this.setSelectedTodolistType('');
             } else {
                 this.setSelectedTodolistName(todolistName);
+                this.setSelectedTodolistType(this.todolistContent.todolistType);
             }
             this.scrollToBottom();
         },
@@ -104,6 +106,7 @@ export default {
     }
     & span {
         font-weight: 450;
+        user-select: none;
     }
     & i {
         opacity: 0;

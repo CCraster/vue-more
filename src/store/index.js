@@ -13,6 +13,7 @@ export default new Vuex.Store({
     state: {
         loginUserType: Cookie.getAttribute(USER_KEY),
         selectedTodolistName: '',
+        selectedTodolistType: '',
         selectedBlockName: ''
     },
     getters: {},
@@ -22,6 +23,9 @@ export default new Vuex.Store({
         },
         setSelectedTodolistName(state, newSelectedTodolistName) {
             state.selectedTodolistName = newSelectedTodolistName;
+        },
+        setSelectedTodolistType(state, newType) {
+            state.selectedTodolistType = newType;
         },
         setSelectedBlockName(state, newSelectedBlockName) {
             state.selectedBlockName = newSelectedBlockName;
