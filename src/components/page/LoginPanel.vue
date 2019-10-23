@@ -52,9 +52,10 @@
                     size="small"
                     type="warning"
                     plain
+                    >{{
+                        rootPortraitHighlighted ? '取消' : '有东西'
+                    }}</el-button
                 >
-                    {{ rootPortraitHighlighted ? '取消' : '有东西' }}
-                </el-button>
             </div>
         </section>
     </div>
@@ -160,7 +161,7 @@ export default {
             }
             // 有输入密码，进行验证
             let res = await GistApi.getSingleGist(GIST_ROOTUSER);
-            let userList = JSON.parse(getGistFiles(res)['user.js'].content);
+            let userList = getGistFiles(res)['user.js'].content;
             if (this.loginPassword === userList.password) {
                 this.$message({
                     message: 'Bingo, welcome!',

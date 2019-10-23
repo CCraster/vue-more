@@ -1,13 +1,19 @@
 <template>
     <div class="container-editor">
         <div class="common-content-title">Todolist编辑</div>
-        <div class="container-edit-item">
+        <div
+            v-if="JSON.stringify(selectedBlockData) !== '{}'"
+            class="container-edit-item"
+        >
             <TodolistItem
                 v-for="(item, index) in blockItemsData"
                 :key="index"
                 :itemContent="item"
                 :itemIndex="item.originIndex"
             />
+        </div>
+        <div v-else class="container-edit-item" style="text-align: center;">
+            暂无数据。。。
         </div>
         <div class="container-add-item">
             <div
@@ -101,6 +107,7 @@ export default {
 
 <style lang="less">
 .container-editor {
+    font-size: 14px;
     .container-edit-item {
         padding: 0 10px;
         margin: 10px 0;

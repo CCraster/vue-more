@@ -34,11 +34,12 @@ export function timeValueToLocal(time) {
 }
 
 /* 对todolist数据按year, month, week, day四种模式组装数组 */
-export function formatTodolistData(originTodolistData, mode) {
+export function formatTodolistData(originTodolistData, mode, searchWord) {
     let originTodolistDeepCopy = JSON.parse(JSON.stringify(originTodolistData)), // 简单深拷贝
         todolistItems = originTodolistDeepCopy.todolistContent,
         transformdItems = {};
     todolistItems.forEach((item, index) => {
+        if (searchWord && item.itemContent.indexOf(searchWord) < 0) return; // 不含有searchWord则跳出本次循环
         let getKey = getKeyByMode(item.createdTime, mode);
         if (!transformdItems[getKey]) {
             // console.log(item);

@@ -48,6 +48,7 @@ export default {
             todolists: {},
             showAddTagDialog: false,
             todolistShowMode: 'week',
+            searchWord: '',
             addTagDialogConfig: {
                 options: {
                     type: '',
@@ -68,7 +69,8 @@ export default {
                     .content;
                 todolistData = formatTodolistData(
                     todolistData,
-                    this.todolistShowMode
+                    this.todolistShowMode,
+                    this.searchWord
                 );
                 return todolistData;
             }
@@ -106,6 +108,7 @@ export default {
         eventBus.$on(EVENT_EDIT_ITEM, this.editBlockItem);
         eventBus.$on(EVENT_DELETE_ITEM, this.deleteBlockItem);
         eventBus.$on(EVENT_CHANGE_TODOLIST_MODE, this.changeTodolistMode);
+        eventBus.$on('enter-search-word', this.enterSearchWord);
     },
     beforeDestroy() {
         eventBus.$off('delete-todolist', this.deleteTodolist);
@@ -191,12 +194,17 @@ export default {
         /* 添加todolist item */
         async addTodolistItem(newTodolistItem) {
             let todolist = this.todolists[this.selectedTodolistName].content;
+            // // 若是有选中的Block，新创建的todolist参考其中的创建时间
+            // if (path(this.selectedBlockName)(todolist)) {
+            //     newTodolistItem.createdTime =
+            //         todolist[this.selectedBlockName].items[0].createdTime;
+            // }
             todolist.todolistContent.push(newTodolistItem);
 
             let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);
             if (res.status === 200) {
                 this.$message.success('添加Todolist Item成功！');
-                this.todolists = getGistFiles(res);
+                // this.todolists = getGistFiles(res);
             } else {
                 this.$message.error('添加Todolist Item失败！');
             }
@@ -207,7 +215,6 @@ export default {
             delete item['originIndex'];
             // !!!vue 监听不到直接通过数组下标修改的变化，参考：https://juejin.im/post/5bd181036fb9a05cdb107b0d
             todolist.todolistContent.splice(index, 1, item);
-            this.todolists[this.selectedTodolistName].content = todolist;
 
             let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);
             if (res.status === 200) {
@@ -238,6 +245,10 @@ export default {
         /* 改变todolist的展示模式 */
         changeTodolistMode(mode) {
             this.todolistShowMode = mode;
+        },
+        /*  */
+        enterSearchWord(searchWord) {
+            this.searchWord = searchWord;
         }
     }
 };

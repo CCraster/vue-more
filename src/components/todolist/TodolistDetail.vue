@@ -1,11 +1,19 @@
 <template>
     <div class="todolistDetail">
         <div class="common-content-title todolist-detail-toolContainer">
-            <span>可用工具</span>
+            <span style="flex-grow: 1">可用工具</span>
+            <el-input
+                v-model="searchWord"
+                placeholder="请输入搜索内容"
+                style="width: 190px; float: right; margin-right: 5px;"
+                size="mini"
+            >
+                <el-button slot="prepend">搜索</el-button>
+            </el-input>
             <el-select
                 v-model="todolistMode"
                 size="mini"
-                style="width: 90px; float: right; margin-right: 10px;"
+                style="width: 90px; float: right; margin-right: 5px;"
             >
                 <el-option
                     v-for="mode in displayMode"
@@ -16,13 +24,16 @@
             </el-select>
         </div>
         <div
-            v-if="JSON.stringify(todolistData) !== '{}'"
+            v-if="
+                JSON.stringify(todolistData) !== '{}' &&
+                    JSON.stringify(todolistData.todolistContent) !== '{}'
+            "
             id="div-todolistDetailContent"
             class="todolist-detail-content"
         >
             <TodolistBlock
-                v-for="(singleTodolist, key) in todolistData.todolistContent"
-                :key="key"
+                v-for="(singleTodolist, index) in todolistData.todolistContent"
+                :key="index"
                 :singleTodolist="singleTodolist"
                 :todolistColor="todolistData.todolistColor"
             />
@@ -50,6 +61,7 @@ export default {
     data() {
         return {
             todolistMode: 'week',
+            searchWord: '',
             displayMode: [
                 {
                     value: 'year',
@@ -77,6 +89,12 @@ export default {
             handler(newMode) {
                 eventBus.$emit(EVENT_CHANGE_TODOLIST_MODE, newMode);
             }
+        },
+        searchWord: {
+            deep: true,
+            handler() {
+                eventBus.$emit('enter-search-word', this.searchWord);
+            }
         }
     }
 };
@@ -92,8 +110,8 @@ export default {
         top: 60px;
         width: 100%;
         height: 34px;
-        // display: flex;
-        // align-items: center;
+        display: flex;
+        align-items: center;
     }
     .todolist-detail-content {
         height: calc(100% - 34px);
@@ -110,6 +128,7 @@ export default {
 .hasNoSelectedTodolist {
     display: flex;
     // align-items: center;
+    font-size: 14px;
     justify-content: center;
 }
 </style>

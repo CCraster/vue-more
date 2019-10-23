@@ -17,8 +17,12 @@
                 class="el-icon-circle-close items-title-deleteIcon common-icon-animation"
                 @click="handleBlockDeleteIconClicked"
             ></i>
+            <i
+                class="el-icon-document-copy items-title-deleteIcon common-icon-animation"
+                @click.stop="handleCopyIconClicked"
+            ></i>
         </div>
-        <div class="todolist-items">
+        <div :id="`block-${singleTodolist.title}`" class="todolist-items">
             <span
                 v-for="(item, index) in singleTodolist.items"
                 :key="index"
@@ -117,6 +121,25 @@ export default {
                 .catch(e => {
                     console.log(e);
                 });
+        },
+        handleCopyIconClicked() {
+            let text = document.getElementById(
+                `block-${this.singleTodolist.title}`
+            ).innerText;
+            this.$copyText(text).then(
+                () => {
+                    this.$notify.success({
+                        title: '提示',
+                        message: '内容已复制'
+                    });
+                },
+                e => {
+                    this.$notify.success({
+                        title: '提示',
+                        message: '复制出错：' + e
+                    });
+                }
+            );
         }
     }
 };

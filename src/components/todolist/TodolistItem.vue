@@ -63,11 +63,9 @@ export default {
         },
         /* 处理item内容改变事件 */
         handleItemLoseFocus(e) {
-            // this.itemContent.itemContent = e.target.innerText;
-            // console.log(e);
-
             if (e.target.innerText !== this.itemContent.itemContent) {
                 this.itemContent.itemContent = e.target.innerText;
+                this.itemContent.lastModifiedTime = new Date().valueOf();
                 e.target.innerHTML = e.target.innerText;
                 eventBus.$emit(
                     EVENT_EDIT_ITEM,
