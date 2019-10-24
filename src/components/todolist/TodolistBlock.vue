@@ -10,7 +10,10 @@
         class="container-todolist-items"
     >
         <div class="todolist-items-title">
-            <i v-if="!isBlockItemAllFinished" class="el-icon-warning"></i>
+            <i
+                v-if="!isBlockItemAllFinished && !isReportTypeTodolist"
+                class="el-icon-warning"
+            ></i>
             <!-- <i v-else class="el-icon-success" :style="{ color: rgbaOpacityReset(todolistColor, 1)}"></i> -->
             {{ singleTodolist.title }}
             <i
@@ -35,11 +38,9 @@
             </span>
         </div>
         <div class="todolist-editTime">
-            <span
-                >创建时间：{{
-                    timeValueToLocal(singleTodolist.createdTime)
-                }}</span
-            >
+            <span>
+                创建时间：{{ timeValueToLocal(singleTodolist.createdTime) }}
+            </span>
             <span>
                 最后修改：{{
                     timeValueToLocal(singleTodolist.lastModifiedTime)
@@ -150,8 +151,9 @@ export default {
     // width: calc(100% / 4);
     position: relative;
     min-width: 200px;
-    max-width: 300px;
+    max-width: calc(50% - 5px);
     flex-grow: 1;
+    box-sizing: border-box;
     margin: 0px 5px 5px 0px;
     padding: 5px 10px 45px 10px;
     border-radius: 4px;
@@ -170,6 +172,7 @@ export default {
             font-size: 18px;
             float: right;
             opacity: 0.5;
+            margin-left: 2px;
             &:hover {
                 opacity: 1;
             }

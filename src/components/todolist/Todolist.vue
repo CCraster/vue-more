@@ -193,6 +193,9 @@ export default {
         },
         /* 添加todolist item */
         async addTodolistItem(newTodolistItem) {
+            if (!this.todolists[this.selectedTodolistName]) {
+                this.$message.error('未选定todolist，无法进行添加！');
+            }
             let todolist = this.todolists[this.selectedTodolistName].content;
             // // 若是有选中的Block，新创建的todolist参考其中的创建时间
             // if (path(this.selectedBlockName)(todolist)) {

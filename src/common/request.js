@@ -32,8 +32,8 @@ service.interceptors.response.use(
     error => {
         let message;
         switch (error.response.status) {
-            case 401:
-                message = 'Token错误';
+            case 404:
+                message = 'Token未绑定或Token错误';
                 break;
             default:
                 message = error.response.data.message;

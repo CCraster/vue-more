@@ -52,10 +52,9 @@
                     size="small"
                     type="warning"
                     plain
-                    >{{
-                        rootPortraitHighlighted ? '取消' : '有东西'
-                    }}</el-button
                 >
+                    {{ rootPortraitHighlighted ? '取消' : '有东西' }}
+                </el-button>
             </div>
         </section>
     </div>
@@ -181,7 +180,8 @@ export default {
         /* Guest-处理登陆按钮事件 */
         handleGuestUserLogin() {
             this.$message({
-                message: '可惜，你其实可以做的更好！',
+                // message: '可惜，你其实可以做的更好！',
+                message: 'Hello！',
                 type: 'warning'
             });
             Cookie.setAttribute(USER_KEY, USER_TYPE.GUEST_ORDINARY, 1);

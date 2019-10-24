@@ -123,14 +123,14 @@ export default {
         ClickOutside
     },
     mounted() {
-        console.log(this.loginUserType);
+        console.log(this.loginUserType, GUEST_MENU);
     },
     computed: {
         ...mapState(['loginUserType', 'token']),
         userMenu() {
             return this.loginUserType === USER_TYPE.ROOT
                 ? ROOT_MENU
-                : GUEST_MENU;
+                : ROOT_MENU;
         },
         activeMenu() {
             return this.$route.params.menuName;
@@ -203,7 +203,8 @@ export default {
             margin-right: 10px;
             padding: 5px 5px;
             transition: all 0.3s;
-            background-color: rgb(0, 89, 255);
+            // background-color: rgb(0, 89, 255);
+            background-color: #006cc5;
             .header-token-submit {
                 height: 100%;
                 display: flex;

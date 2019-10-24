@@ -87,6 +87,7 @@ export default {
         & + label {
             width: 18px;
             height: 18px;
+            flex-shrink: 0;
             margin-left: 5px;
             line-height: 18px;
             font-size: 14px;
@@ -96,11 +97,11 @@ export default {
             border-radius: 2px;
             font-weight: bold;
             border: 2px solid #007add;
-            // border: 2px solid #666;
             text-align: center;
         }
         &:checked + label::before {
             content: '\2713';
+            margin-right: 2px;
         }
     }
     .item-editable {

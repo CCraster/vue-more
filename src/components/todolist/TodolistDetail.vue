@@ -121,7 +121,7 @@ export default {
         flex-flow: row wrap;
         align-content: flex-start;
         padding: 5px 0 0px 5px;
-        transition: all 0.3s;
+        // transition: all 0.3s;
         overflow: scroll;
     }
 }
