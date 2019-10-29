@@ -195,13 +195,18 @@ export default {
         async addTodolistItem(newTodolistItem) {
             if (!this.todolists[this.selectedTodolistName]) {
                 this.$message.error('未选定todolist，无法进行添加！');
+                return;
             }
+
+            /**
+             * 若是有选中的Block，新创建的todolist参考其中的创建时间
+             * 新加入item时间在不同时间粒度下效果不好，功能有缺陷，暂不不用。
+             */
+            if (Object.keys(this.selectedBlockData) != false) {
+                newTodolistItem.createdTime = this.selectedBlockData.items[0].createdTime;
+            }
+
             let todolist = this.todolists[this.selectedTodolistName].content;
-            // // 若是有选中的Block，新创建的todolist参考其中的创建时间
-            // if (path(this.selectedBlockName)(todolist)) {
-            //     newTodolistItem.createdTime =
-            //         todolist[this.selectedBlockName].items[0].createdTime;
-            // }
             todolist.todolistContent.push(newTodolistItem);
 
             let res = await GistApi.editGistFile(GIST_TODOLIST, todolist);

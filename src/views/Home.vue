@@ -123,14 +123,14 @@ export default {
         ClickOutside
     },
     mounted() {
-        console.log(this.loginUserType, GUEST_MENU);
+        console.log(this.loginUserType);
     },
     computed: {
         ...mapState(['loginUserType', 'token']),
         userMenu() {
             return this.loginUserType === USER_TYPE.ROOT
                 ? ROOT_MENU
-                : ROOT_MENU;
+                : GUEST_MENU;
         },
         activeMenu() {
             return this.$route.params.menuName;

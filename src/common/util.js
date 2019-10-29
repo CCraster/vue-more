@@ -74,7 +74,8 @@ export function formatTodolistData(originTodolistData, mode, searchWord) {
                 let date = new Date(time),
                     length = 2;
                 return `${date.getFullYear()}年${(
-                    Array(length).join('0') + date.getMonth()
+                    Array(length).join('0') +
+                    (date.getMonth() + 1)
                 ).slice(-length)}月`;
             },
             week: time => {
@@ -96,7 +97,8 @@ export function formatTodolistData(originTodolistData, mode, searchWord) {
                 let date = new Date(time),
                     length = 2;
                 return `${date.getFullYear()}年${(
-                    Array(length).join('0') + date.getMonth()
+                    Array(length).join('0') +
+                    (date.getMonth() + 1)
                 ).slice(-length)}月${(
                     Array(length).join('0') + date.getDate()
                 ).slice(-length)}日`;

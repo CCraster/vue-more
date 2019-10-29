@@ -5,7 +5,7 @@
             borderLeft: `2px solid ${rgbaOpacityReset(todolistColor, 1)}`
         }"
         @click="handleBlockSelected"
-        @dblclick.native="handleBlockSelected"
+        @dblclick="handleBlockDbClicked"
         :class="{ 'common-div-highlight': isBlockSelected }"
         class="container-todolist-items"
     >
@@ -38,9 +38,11 @@
             </span>
         </div>
         <div class="todolist-editTime">
-            <span>
-                创建时间：{{ timeValueToLocal(singleTodolist.createdTime) }}
-            </span>
+            <span
+                >创建时间：{{
+                    timeValueToLocal(singleTodolist.createdTime)
+                }}</span
+            >
             <span>
                 最后修改：{{
                     timeValueToLocal(singleTodolist.lastModifiedTime)
@@ -56,6 +58,9 @@ import { mapState, mapMutations } from 'vuex';
 import { EVENT_DELETE_ITEM } from '@/constants/';
 import { timeValueToLocal } from '@/common/util';
 // import TodolistItem from './TodolistItem';
+
+let timerForBlock = null;
+
 export default {
     name: 'TodolistBlock',
     components: {
@@ -105,11 +110,24 @@ export default {
         rgbaOpacityReset(rgba, opacity) {
             return rgba.slice(0, rgba.lastIndexOf(',') + 1) + opacity + ')';
         },
+        /* 单击block选中 */
         handleBlockSelected() {
-            if (!(this.singleTodolist.title === this.selectedBlockName)) {
-                this.setSelectedBlockName(this.singleTodolist.title);
+            if (
+                this.singleTodolist.title !== this.selectedBlockName &&
+                !timerForBlock
+            ) {
+                timerForBlock = setTimeout(() => {
+                    this.setSelectedBlockName(this.singleTodolist.title);
+                    timerForBlock = null;
+                }, 50);
             }
         },
+        /* 双击block取消选中 */
+        handleBlockDbClicked() {
+            clearTimeout(timerForBlock);
+            this.setSelectedBlockName('');
+        },
+        /* 点击删除block icon */
         handleBlockDeleteIconClicked() {
             this.$confirm(
                 `确认要删除记录「${this.singleTodolist.title}」吗，删除后将不可恢复？`,
@@ -123,6 +141,7 @@ export default {
                     console.log(e);
                 });
         },
+        /* 点击复制block内容icon */
         handleCopyIconClicked() {
             let text = document.getElementById(
                 `block-${this.singleTodolist.title}`
