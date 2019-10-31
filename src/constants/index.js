@@ -13,6 +13,7 @@ export const USER_TYPE = {
 /* 文件存储gist id */
 export const GIST_ROOTUSER = '6f63ac9cf42770a1ab4699b1620a8729';
 export const GIST_TODOLIST = '85649915f0fac602008b7e1b3f485337';
+export const GIST_BLOG = '27e47198a2e4bf5dd650dc709e8c22cd';
 
 /* 触发事件名称 */
 export const EVENT_ADD_TODOLIST = 'add-todolist';
