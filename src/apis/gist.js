@@ -13,13 +13,12 @@ export default {
         });
     },
     addGistFile(gistId, data) {
-        let oldFileName = data.oldFileName;
-        delete data.oldFileName;
+        // let oldFileName = data.oldFileName;
+        // delete data.oldFileName;
         let data_reconstruct = {
             files: {
-                [oldFileName]: {
-                    content: JSON.stringify(data),
-                    filename: data.fileName
+                [data.uid]: {
+                    content: JSON.stringify(data)
                 }
             }
         };
@@ -32,7 +31,7 @@ export default {
     editGistFile(gistId, data) {
         let data_reconstruct = {
             files: {
-                [data.fileName]: {
+                [data.uid]: {
                     content: JSON.stringify(data)
                 }
             }

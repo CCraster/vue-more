@@ -3,7 +3,7 @@
         class="container-tag"
         :class="{ selectedRag: isSelected }"
         :style="{ backgroundColor: todolistContent.todolistColor }"
-        @click="handleTodolistRagClicked(todolistContent.fileName)"
+        @click="handleTodolistRagClicked(todolistContent.uid)"
     >
         <span>{{ todolistContent.fileName }}</span>
         <i
@@ -31,7 +31,7 @@ export default {
             return this.todolist.content;
         },
         isSelected() {
-            return this.todolist.filename === this.selectedTodolistName;
+            return this.todolistContent.uid === this.selectedTodolistName;
         }
     },
     methods: {
@@ -55,31 +55,31 @@ export default {
                 }
             });
         },
-        handleTodolistRagClicked(todolistName) {
-            if (todolistName === this.selectedTodolistName) {
+        handleTodolistRagClicked(uid) {
+            if (uid === this.selectedTodolistName) {
                 this.setSelectedTodolistName('');
                 this.setSelectedTodolistType('');
             } else {
-                this.setSelectedTodolistName(todolistName);
+                this.setSelectedTodolistName(uid);
                 this.setSelectedTodolistType(this.todolistContent.todolistType);
             }
             this.scrollToBottom();
         },
         handleDeleteIconClicked() {
             this.$confirm(
-                `确认要删除Todolist「${this.todolist.filename}」吗，删除后将不可恢复？`,
+                `确认要删除Todolist「${this.todolistContent.fileName}」吗，删除后将不可恢复？`,
                 '提示',
                 { type: 'warning' }
             )
                 .then(() => {
-                    eventBus.$emit('delete-todolist', this.todolist.filename);
+                    eventBus.$emit('delete-todolist', this.todolistContent.uid);
                 })
                 .catch(e => {
                     console.log(e);
                 });
         },
         handleSettingIconClicked() {
-            eventBus.$emit('reconfig-todolist', this.todolist.filename);
+            eventBus.$emit('reconfig-todolist', this.todolistContent.uid);
         }
     }
 };

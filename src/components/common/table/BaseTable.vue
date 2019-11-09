@@ -7,7 +7,11 @@
             align="center"
         >
             <template slot-scope="scope">
-                <slot v-if="column.slotName" :name="column.slotName" v-bind="scope" />
+                <slot
+                    v-if="column.slotName"
+                    :name="column.slotName"
+                    v-bind="scope"
+                />
                 <template v-else>{{ scope.row[column.prop] }}</template>
             </template>
         </el-table-column>
@@ -20,15 +24,15 @@ export default {
     props: {
         blogs: {
             type: Array,
-            default: []
+            default: () => []
         },
         columns: {
             type: Array,
-            default: []
+            default: () => []
         }
     },
     mounted() {
-        console.log(this.columns);
+        // console.log(this.columns);
     }
 };
 </script>

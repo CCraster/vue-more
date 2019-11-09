@@ -26,6 +26,10 @@ export const EVENT_CHANGE_TODOLIST_MODE = 'change-todolist-mode';
 /* 用户菜单 */
 export const ROOT_MENU = [
     {
+        name: '博客后台',
+        index: 'blog-manage'
+    },
+    {
         name: '博客',
         index: 'blog'
     },

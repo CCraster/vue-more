@@ -15,7 +15,8 @@
                     v-for="menu in userMenu"
                     :key="menu.index"
                     :index="menu.index"
-                >{{ menu.name }}</el-menu-item>
+                    >{{ menu.name }}</el-menu-item
+                >
             </el-menu>
             <div
                 v-click-outside="handleTokenClickOutside"
@@ -29,22 +30,31 @@
                     :class="{ 'display-none': isTokenElementCollapse }"
                 >
                     <div class="token-input" @click.stop>
-                        <el-input v-model="accessToken" size="small" :disabled="isTokenBinded"></el-input>
+                        <el-input
+                            v-model="accessToken"
+                            size="small"
+                            :disabled="isTokenBinded"
+                        ></el-input>
                     </div>
                     <el-button
                         @click.stop="handleTokenBind"
                         :disabled="isTokenBinded"
                         size="small"
                         style="margin-left: 5px"
-                    >绑定</el-button>
+                        >绑定</el-button
+                    >
                     <el-button
                         @click.stop="handleTokenDebind"
                         :disabled="!isTokenBinded"
                         size="small"
                         style="margin-left: 2px;"
-                    >解绑</el-button>
+                        >解绑</el-button
+                    >
                 </div>
-                <div class="header-token-tip" :class="{ 'display-none': !isTokenElementCollapse }">
+                <div
+                    class="header-token-tip"
+                    :class="{ 'display-none': !isTokenElementCollapse }"
+                >
                     <span>token</span>
                     <i v-if="isTokenBinded" class="el-icon-success"></i>
                     <i v-else class="el-icon-warning"></i>
@@ -54,12 +64,12 @@
                 <el-dropdown @command="handleUserLogout">
                     <span class="login-user-name">
                         Hi, {{ isRootUserLogin ? 'Craster' : 'Guest' }}
-                        <i
-                            class="el-icon-arrow-down el-icon--right"
-                        ></i>
+                        <i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command="logout">退出</el-dropdown-item>
+                        <el-dropdown-item command="logout"
+                            >退出</el-dropdown-item
+                        >
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
@@ -103,7 +113,8 @@ export default {
     data() {
         return {
             menus: {
-                blog: BlogEditor,
+                'blog-manage': BlogEditor,
+                blog: TodoPage,
                 todolist: Todolist,
                 aboutme: ScrollAnimation
             },

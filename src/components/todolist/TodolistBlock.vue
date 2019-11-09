@@ -38,11 +38,9 @@
             </span>
         </div>
         <div class="todolist-editTime">
-            <span
-                >创建时间：{{
-                    timeValueToLocal(singleTodolist.createdTime)
-                }}</span
-            >
+            <span>
+                创建时间：{{ timeValueToLocal(singleTodolist.createdTime) }}
+            </span>
             <span>
                 最后修改：{{
                     timeValueToLocal(singleTodolist.lastModifiedTime)
@@ -206,6 +204,8 @@ export default {
         }
         .todolist-conplete {
             text-decoration: line-through;
+            opacity: 0.6;
+            // color: #666;
         }
     }
     .todolist-editTime {

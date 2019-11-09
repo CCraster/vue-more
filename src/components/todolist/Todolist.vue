@@ -13,6 +13,7 @@
             @add-todolist="addTodoList"
             :visible.sync="showAddTagDialog"
             :options="addTagDialogConfig.options"
+            :confirm="addTodoList"
         />
     </div>
 </template>
@@ -139,9 +140,8 @@ export default {
         /* 增加todolist弹窗显示标志 */
         showAddTodolistDialog() {
             this.addTagDialogConfig.options = {
-                type: 'create',
                 title: '新建Todo List',
-                todolistName: '',
+                fileName: '',
                 todolistType: 'todolist',
                 todolistColor: 'rgba(0, 122, 221, 1)',
                 todolistContent: []
@@ -152,17 +152,11 @@ export default {
         async addTodoList(newTodolist) {
             let res = await GistApi.addGistFile(GIST_TODOLIST, newTodolist);
             if (res.status === 200) {
-                let msg =
-                    this.addTagDialogConfig.options.type === 'create'
-                        ? '新Todolist添加成功！'
-                        : '更改Todolist配置成功！';
+                let msg = '「新增 / 更改」Todolist成功！';
                 this.$message.success(msg);
                 this.todolists = getGistFiles(res);
             } else {
-                let msg =
-                    this.addTagDialogConfig.options.type === 'create'
-                        ? '添加Todolist失败！'
-                        : '更改Todolist配置失败！';
+                let msg = '「新增 / 更改」Todolist配置失败！';
                 this.$message.error(msg);
             }
         },
@@ -181,13 +175,8 @@ export default {
             let reconfigTodolistContent = this.todolists[reconfigTodolistName]
                 .content;
             this.addTagDialogConfig.options = {
-                type: 'reconfig',
                 title: '更改配置',
-                oldTodolistName: reconfigTodolistContent.fileName,
-                todolistName: reconfigTodolistContent.fileName,
-                todolistType: reconfigTodolistContent.todolistType,
-                todolistColor: reconfigTodolistContent.todolistColor,
-                todolistContent: reconfigTodolistContent.todolistContent
+                ...reconfigTodolistContent
             };
             this.showAddTagDialog = true;
         },
@@ -196,14 +185,6 @@ export default {
             if (!this.todolists[this.selectedTodolistName]) {
                 this.$message.error('未选定todolist，无法进行添加！');
                 return;
-            }
-
-            /**
-             * 若是有选中的Block，新创建的todolist参考其中的创建时间
-             * 新加入item时间在不同时间粒度下效果不好，功能有缺陷，暂不不用。
-             */
-            if (Object.keys(this.selectedBlockData) != false) {
-                newTodolistItem.createdTime = this.selectedBlockData.items[0].createdTime;
             }
 
             let todolist = this.todolists[this.selectedTodolistName].content;

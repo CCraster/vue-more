@@ -9,7 +9,7 @@
         <div class="add-tag-nameContainer">
             <span>Todolist名称：</span>
             <el-input
-                v-model="options.todolistName"
+                v-model="options.fileName"
                 placeholder="请输入todolist名称"
                 maxlength="8"
                 size="small"
@@ -70,6 +70,9 @@ export default {
         options: {
             type: Object,
             default: () => {}
+        },
+        confirm: {
+            type: Function
         }
     },
     data() {
@@ -101,34 +104,28 @@ export default {
             ]
         };
     },
-    computed: {
-        todolistData() {
-            return {
-                oldFileName:
-                    this.options.type === 'create'
-                        ? this.options.todolistName
-                        : this.options.oldTodolistName,
-                fileName: this.options.todolistName,
-                todolistColor: this.options.todolistColor,
-                todolistType: this.options.todolistType,
-                todolistContent: this.options.todolistContent
-            };
-        }
-    },
     methods: {
         /* 借助.sync实现父子组件「数据绑定」 */
         updateVisible(v) {
             this.$emit('update:visible', v);
         },
         confirmAddTodolist() {
-            if (this.options.todolistName === '') {
+            if (this.options.name === '') {
                 this.$message({
                     message: '请输入Todolist名称！',
                     type: 'error'
                 });
                 return;
             }
-            this.$emit('add-todolist', this.todolistData);
+            let timeValue = new Date().valueOf();
+            if (!this.options.uid) {
+                this.options.uid = 'todolist-' + timeValue;
+                this.options.createdTime = this.options.lastModiifyTime = timeValue;
+            } else {
+                this.options.lastModiifyTime = timeValue;
+            }
+            delete this.options.title;
+            this.confirm(this.options);
             this.updateVisible(false);
         }
     }

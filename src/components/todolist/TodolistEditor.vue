@@ -31,6 +31,12 @@
                     size="small"
                     v-model="newItem.itemColor"
                 ></el-color-picker>
+                <el-date-picker
+                    v-model="pickTime"
+                    size="small"
+                    type="datetime"
+                    placeholder="请选择日期时间"
+                ></el-date-picker>
                 <el-button
                     class="editor-add-input"
                     size="small"
@@ -61,7 +67,8 @@ export default {
                 createdTime: '',
                 lastModifiedTime: '',
                 finished: false
-            }
+            },
+            pickTime: null
         };
     },
     props: {
@@ -92,6 +99,7 @@ export default {
              * 所以会出现在keyDownHander中置空textare后多一“\n”的情况
              * 借助js任务机制，使用setTimeout
              */
+            this.pickTime = null;
             setTimeout(() => {
                 this.$refs['editor-textarea'].innerText = '';
             });
@@ -118,6 +126,9 @@ export default {
             }
             this.newItem.itemContent = textareaElement.innerText;
             this.newItem.lastModifiedTime = this.newItem.createdTime = new Date().valueOf();
+            if (this.pickTime) {
+                this.newItem.createdTime = new Date(this.pickTime).valueOf();
+            }
             eventBus.$emit(
                 EVENT_ADD_TODOLIST_ITEM,
                 JSON.parse(JSON.stringify(this.newItem)) // 用此方法避免每次添加的都是同一个对象的地址，导致后续修改前面的内容
@@ -162,12 +173,7 @@ export default {
             margin-top: 5px;
             justify-content: flex-end;
             .editor-color-picker {
-                // width: 40px;
-                // box-sizing: border-box;
-                // padding: 0 0px 0 6px;
-                // border-radius: 4px;
-                // border: 1px solid #dcdfe6;
-                // background-color: #f5f7fa;
+                margin-right: 5px;
             }
             .editor-add-input {
                 margin-left: 5px;
