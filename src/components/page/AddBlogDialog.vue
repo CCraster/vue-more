@@ -71,7 +71,13 @@
             <el-button type="primary" size="small" @click="confirmSubmit" plain
                 >确定</el-button
             >
-            <el-button type="primary" size="small" plain>编辑内容</el-button>
+            <el-button
+                type="primary"
+                size="small"
+                @click="showEditBlogDialog"
+                plain
+                >编辑内容</el-button
+            >
         </div>
     </el-dialog>
 </template>
@@ -117,6 +123,10 @@ export default {
     methods: {
         updateVisible(v) {
             this.$emit('update:visible', v);
+        },
+        showEditBlogDialog() {
+            this.$emit('isShowEditBlogDialog', true);
+            this.updateVisible(false);
         },
         confirmSubmit() {
             let timeValue = new Date().valueOf();

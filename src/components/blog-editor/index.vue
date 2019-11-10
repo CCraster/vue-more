@@ -70,9 +70,15 @@
         />
         <AddBlogDialog
             :visible.sync="isShowAddBlogDialog"
+            @isShowEditBlogDialog="isShowEditBlogDialog = true"
             :options="options"
             :categoryAndLabelSet="categoryAndLabelSet"
             :confirm="addBlog"
+        />
+        <EditBlogDialog
+            :visible.sync="isShowEditBlogDialog"
+            :blogContent="focusBlogData.content"
+            :save="editBlogContent"
         />
     </div>
 </template>
@@ -82,6 +88,7 @@ import GistApi from '@/apis/gist';
 import BaseTable from '@/components/common/table/BaseTable';
 import Pagination from '@/components/common/table/Pagination';
 import AddBlogDialog from '@/components/page/AddBlogDialog';
+import EditBlogDialog from '@/components/page/EditBlogDialog';
 import { getGistFiles, timeValueToLocal } from '@/common/util';
 import { GIST_BLOG } from '@/constants/';
 
@@ -90,7 +97,8 @@ export default {
     components: {
         BaseTable,
         Pagination,
-        AddBlogDialog
+        AddBlogDialog,
+        EditBlogDialog
     },
     data() {
         return {
@@ -98,7 +106,9 @@ export default {
             searchWord: '',
             pageSize: 3,
             pageIndex: 1,
+            focusBlogData: {},
             isShowAddBlogDialog: false,
+            isShowEditBlogDialog: false,
             options: {
                 title: '',
                 name: '',
@@ -204,6 +214,7 @@ export default {
                 ...row
             };
             this.isShowAddBlogDialog = true;
+            this.focusBlogData = row;
         },
         confirmDeleteBlog(row) {
             this.$confirm(
@@ -219,7 +230,6 @@ export default {
                 });
         },
         async addBlog(newBlog) {
-            console.log(newBlog);
             let res = await GistApi.editGistFile(GIST_BLOG, newBlog);
             if (res.status === 200) {
                 let msg = '「新增/更改」Blog配置成功！';
@@ -237,6 +247,19 @@ export default {
                 this.blogs = getGistFiles(res);
             } else {
                 this.$message.error('Blog删除失败！');
+            }
+        },
+        async editBlogContent(newContent) {
+            this.focusBlogData.content = newContent;
+            this.focusBlogData.lastModiifyTime = Date.now();
+            let res = await GistApi.editGistFile(GIST_BLOG, this.focusBlogData);
+            if (res.status === 200) {
+                let msg = `「更改」Blog「${this.focusBlogData.name}」内容成功！`;
+                this.$message.success(msg);
+                // this.blogs = getGistFiles(res);
+            } else {
+                let msg = `「更改」Blog「${this.focusBlogData.name}」内容失败！`;
+                this.$message.error(msg);
             }
         }
     }
