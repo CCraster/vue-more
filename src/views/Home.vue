@@ -182,6 +182,8 @@ export default {
     @color-font: #fff;
 
     height: 100%;
+    display: flex;
+    flex-direction: column;
     .home-header {
         // background-color: #2196f3;
         display: flex;
@@ -258,14 +260,14 @@ export default {
         }
     }
     .home-main {
-        height: calc(100% - 120px);
-        // min-height: ~'calc(100% - 120px)';
+        flex-grow: 1;
+        overflow: hidden; // 不加可能会出现高度溢出的情况，没搞明白！！！
         padding: 0px 15%;
         background-color: #fff;
     }
     .home-footer {
-        height: 60px;
-        background-color: #fff;
+        background-color: #007add;
+        // background-color: #f67505;
         padding: 0px 15%;
     }
 }
