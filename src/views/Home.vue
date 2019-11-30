@@ -61,7 +61,7 @@
                 </div>
             </div>
             <div class="header-user">
-                <el-dropdown @command="handleUserLogout">
+                <el-dropdown @command="handleUserLogout" size="medium">
                     <span class="login-user-name">
                         Hi, {{ isRootUserLogin ? 'Craster' : 'Guest' }}
                         <i class="el-icon-arrow-down el-icon--right"></i>

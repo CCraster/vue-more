@@ -38,11 +38,9 @@
             </span>
         </div>
         <div class="todolist-editTime">
-            <span
-                >创建时间：{{
-                    timeValueToLocal(singleTodolist.createdTime)
-                }}</span
-            >
+            <span>
+                创建时间：{{ timeValueToLocal(singleTodolist.createdTime) }}
+            </span>
             <span>
                 最后修改：{{
                     timeValueToLocal(singleTodolist.lastModifiedTime)

@@ -7,7 +7,7 @@
         >
             <TodolistItem
                 v-for="(item, index) in blockItemsData"
-                :key="index"
+                :key="item.createdTime + '-' + index"
                 :itemContent="item"
                 :itemIndex="item.originIndex"
             />
