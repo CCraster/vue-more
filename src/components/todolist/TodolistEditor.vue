@@ -142,10 +142,14 @@ export default {
 
 <style lang="less">
 .container-editor {
+    display: flex;
+    flex-direction: column;
     font-size: 14px;
     .container-edit-item {
         padding: 0 10px;
         margin: 10px 0;
+        flex-grow: 1;
+        overflow: scroll;
     }
     .container-add-item {
         padding: 0 10px;

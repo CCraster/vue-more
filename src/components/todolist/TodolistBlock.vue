@@ -38,9 +38,11 @@
             </span>
         </div>
         <div class="todolist-editTime">
-            <span>
-                创建时间：{{ timeValueToLocal(singleTodolist.createdTime) }}
-            </span>
+            <span
+                >创建时间：{{
+                    timeValueToLocal(singleTodolist.createdTime)
+                }}</span
+            >
             <span>
                 最后修改：{{
                     timeValueToLocal(singleTodolist.lastModifiedTime)
@@ -201,6 +203,10 @@ export default {
         .todolistItem-uneditable {
             font-size: 14px;
             white-space: pre-wrap;
+            & span {
+                word-wrap: break-word;
+                word-break: break-all;
+            }
         }
         .todolist-conplete {
             text-decoration: line-through;

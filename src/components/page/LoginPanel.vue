@@ -52,9 +52,10 @@
                     size="small"
                     type="warning"
                     plain
+                    >{{
+                        rootPortraitHighlighted ? '取消' : '有东西'
+                    }}</el-button
                 >
-                    {{ rootPortraitHighlighted ? '取消' : '有东西' }}
-                </el-button>
             </div>
         </section>
     </div>
@@ -166,7 +167,7 @@ export default {
                     message: 'Bingo, welcome!',
                     type: 'success'
                 });
-                Cookie.setAttribute(USER_KEY, USER_TYPE.ROOT, 1); //
+                Cookie.setAttribute(USER_KEY, USER_TYPE.ROOT, 30); // 登陆有效期30天
                 this.setLoginUserType(USER_TYPE.ROOT); // 更改为ROOT用户
                 console.log(this.loginUserType);
                 this.$router.push('home/todolist'); // 登陆成功跳转

@@ -15,11 +15,6 @@
             @blur="handleItemLoseFocus"
             >{{ itemContent.itemContent }}</span
         >
-        <!-- <textarea
-            class="item-editable"
-            @blur="handleItemLoseFocus"
-            v-model="itemContent.itemContent"
-        ></textarea>-->
         <i
             v-if="!isReportTypeTodolist"
             class="el-icon-circle-close item-delete-icon common-icon-animation"
@@ -105,6 +100,8 @@ export default {
         }
     }
     .item-editable {
+        width: calc(100% - 8px);
+        box-sizing: border-box;
         white-space: pre-wrap;
         margin: 0 4px 2px 4px;
         padding: 0px 4px;

@@ -11,7 +11,7 @@ export default {
     mutations: {
         SET_TOKEN: (state, value) => {
             state.token = value;
-            Cookie.setAttribute(TOKEN_KEY, value, 30);
+            Cookie.setAttribute(TOKEN_KEY, value, 30 * 12);
         },
         REMOVE_TOKEN: state => {
             state.token = null;

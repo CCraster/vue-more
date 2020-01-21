@@ -274,10 +274,11 @@ export default {
     }
     .container-todolist-editor {
         width: 300px;
-        min-height: 300px;
-        max-height: calc(100% - 12px);
+        min-height: 200px;
+        max-height: calc(100% - 12px - 6px);
         margin: 6px 0 6px 0;
-        overflow-y: scroll;
+        overflow: hidden;
+        padding-bottom: 6px;
         .common-boxShadow-mixin();
     }
 }
