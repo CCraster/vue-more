@@ -140,6 +140,7 @@ export default {
         /* 增加todolist弹窗显示标志 */
         showAddTodolistDialog() {
             this.addTagDialogConfig.options = {
+                type: 'create',
                 title: '新建Todo List',
                 fileName: '',
                 todolistType: 'todolist',
@@ -176,6 +177,7 @@ export default {
                 .content;
             this.addTagDialogConfig.options = {
                 title: '更改配置',
+                type: 'reconfig',
                 ...reconfigTodolistContent
             };
             this.showAddTagDialog = true;
