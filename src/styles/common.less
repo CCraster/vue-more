@@ -1,0 +1,47 @@
+@import './variables.less';
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  box-sizing: border-box;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  & *,
+  *:before,
+  *:after {
+    box-sizing: inherit;
+  }
+}
+
+/* 通用title栏样式 */
+.common-content-title {
+  width: 100%;
+  height: 34px;
+  font-size: 16px;
+  padding: 0 0 0 10px;
+  line-height: 34px;
+  font-weight: bold;
+  box-sizing: border-box;
+  border-left: 3px solid #007add;
+}
+/* 通用icon动画样式 */
+.common-icon-animation {
+  transition: opacity 0.5s, transform 0.5s;
+  &:hover {
+    cursor: pointer;
+    transform: rotate(90deg);
+    font-weight: bold;
+  }
+  &:active {
+    transform: scale(0.9);
+  }
+}
+/* 通用div高亮样式 */
+.common-div-highlight {
+  box-shadow: 0px 0 8px 0px #666;
+  transform: scale(0.95);
+}
