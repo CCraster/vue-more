@@ -11,7 +11,7 @@ import './styles/common.less' // 引用全局通用less样式
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
-Vue.use(ElementUI)
+Vue.use(ElementUI, { size: 'small', zIndex: 3000 })
 Vue.use(VueAnime)
 Vue.use(VueParticles)
 Vue.use(VueClipboard)

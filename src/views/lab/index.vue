@@ -36,7 +36,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import '~@/styles/variables.less';
 .lab {
   height: 100%;
   display: flex;
@@ -48,6 +47,7 @@ export default {
     box-shadow: 0px 6px 20px -6px #00000044;
     display: flex;
     align-items: flex-start;
+    flex-shrink: 0;
     .unit-wrapper {
       margin-right: 5px;
       padding: 2px 5px;
