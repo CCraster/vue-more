@@ -114,3 +114,23 @@ export function formatTodolistData(originTodolistData, mode, searchWord) {
   //     return todolistArray;
   // }
 }
+
+/**
+ * 节流函数
+ * @param {*} fn
+ * @param {*} time
+ */
+export const throttle = (fn, interval = 300) => {
+  let startTimestamp = 0
+
+  return function() {
+    let context = this
+    let args = arguments
+    let now = +Date.now()
+
+    if (now - startTimestamp > interval) {
+      startTimestamp = now
+      fn.apply(context, args)
+    }
+  }
+}
