@@ -1,35 +1,35 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import token from './modules/token';
-import Cookie from '@/common/cookie';
-import { USER_KEY } from '@/constants';
+import Vue from 'vue'
+import Vuex from 'vuex'
+import token from './modules/token'
+import Cookie from '@/utils/cookie'
+import { USER_KEY } from '@/constants'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 export default new Vuex.Store({
-    modules: {
-        token
+  modules: {
+    token
+  },
+  state: {
+    loginUserType: Cookie.getAttribute(USER_KEY),
+    selectedTodolistName: '',
+    selectedTodolistType: '',
+    selectedBlockName: ''
+  },
+  getters: {},
+  mutations: {
+    setLoginUserType(state, userType) {
+      state.loginUserType = userType
     },
-    state: {
-        loginUserType: Cookie.getAttribute(USER_KEY),
-        selectedTodolistName: '',
-        selectedTodolistType: '',
-        selectedBlockName: ''
+    setSelectedTodolistName(state, newSelectedTodolistName) {
+      state.selectedTodolistName = newSelectedTodolistName
     },
-    getters: {},
-    mutations: {
-        setLoginUserType(state, userType) {
-            state.loginUserType = userType;
-        },
-        setSelectedTodolistName(state, newSelectedTodolistName) {
-            state.selectedTodolistName = newSelectedTodolistName;
-        },
-        setSelectedTodolistType(state, newType) {
-            state.selectedTodolistType = newType;
-        },
-        setSelectedBlockName(state, newSelectedBlockName) {
-            state.selectedBlockName = newSelectedBlockName;
-        }
+    setSelectedTodolistType(state, newType) {
+      state.selectedTodolistType = newType
     },
-    actions: {}
-});
+    setSelectedBlockName(state, newSelectedBlockName) {
+      state.selectedBlockName = newSelectedBlockName
+    }
+  },
+  actions: {}
+})

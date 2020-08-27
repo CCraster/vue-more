@@ -1,5 +1,5 @@
 <template>
-  <div class="node-wrapper" :style="nodeStyle">
+  <div class="node-wrapper" :style="nodeStyle" v-if="shouldRender">
     <span
       :class="{
         'el-icon-folder-remove': !treeNode.isLeaf && !treeNode.clip,
@@ -25,15 +25,27 @@ export default {
       type: Object,
       default: () => {}
     },
+    // 缩紧pix值
     tabSize: {
       type: Number,
       default: 8
+    },
+    // y轴偏移量
+    translateY: {
+      type: Number,
+      default: 0
+    },
+    // 节点是否应该渲染
+    shouldRender: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     nodeStyle() {
       return {
-        paddingLeft: this.tabSize * (this.treeNode.depth - 1) + 'px'
+        paddingLeft: this.tabSize * (this.treeNode.depth - 1) + 'px',
+        transform: `translate(0, ${this.translateY}px)`
       }
     }
   }
@@ -42,6 +54,7 @@ export default {
 
 <style lang="less" scoped>
 .node-wrapper {
+  position: absolute;
   height: 22px;
   display: flex;
   align-items: center;

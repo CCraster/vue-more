@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Cookie from '@/common/cookie'
+import Cookie from '@/utils/cookie'
 import { USER_KEY } from '@/constants'
 
 import { LAB_ROUTE } from './lab.js'

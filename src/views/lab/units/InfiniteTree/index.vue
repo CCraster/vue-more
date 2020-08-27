@@ -1,7 +1,11 @@
 <template>
   <div class="infinite-tree-wrapper" v-loading="loading">
-    <div class="tree-wrapper">
-      <tree v-model="jsonCode" />
+    <div class="tree-wrapper" :style="{}" @scroll="throttle(onScroll)">
+      <tree
+        v-model="jsonCode"
+        :renderNodeList="renderNodeList"
+        :is-infinite-tree="true"
+      />
     </div>
     <codemirror
       :value="formatedJsonCode"
@@ -26,6 +30,8 @@
 import Tree from './components/Tree.vue'
 import JSON5 from 'json5'
 import { fakeJsonData } from './utils.mjs'
+import { throttle } from 'ramda'
+
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/mode/javascript/javascript.js'
 import 'codemirror/lib/codemirror.css'
@@ -41,6 +47,7 @@ export default {
     return {
       fakeConfig: '5000, 3', // fake数据默认配置
       loading: false, // fake数据过程
+      renderNodeList: [0, 100], // 记录需要渲染的节点的下标最小&最大值
       jsonCode: fakeJsonData(5000, 3) || {
         a: {
           a1: 'a1',
@@ -92,26 +99,34 @@ export default {
     }
   },
   methods: {
+    throttle,
     fakeData() {
       let config = this.fakeConfig.split(',').map(d => parseInt(d))
-      this.loading = true
-      console.log(1)
-      // this.$forceUpdate()
-      setTimeout(() => {
-        this.$nextTick(() => {
-          this.jsonCode = fakeJsonData(...config)
-          this.loading = false
-        })
-      }, 100)
-      // this.$nextTick(() => {
-      //   this.jsonCode = fakeJsonData(...config)
-      //   this.loading = false
-      //   console.log(2)
-      // })
-      // Promise.resolve().then(() => {
-      //   this.jsonCode = fakeJsonData(...config)
-      //   this.loading = false
-      // })
+      // this.loading = true
+      this.jsonCode = fakeJsonData(...config)
+    },
+    onScroll(e) {
+      const config = {
+        nodeHeight: 22, // 节点高度
+        visibleOffset: 1 // 视窗上下visibleOffset个高度的节点渲染
+      }
+      const nodeNum = parseInt(this.fakeConfig.split(',')[0])
+      let scrollTop = e.target.scrollTop,
+        targetHeight = e.target.clientHeight
+      if (!scrollTop) return
+      console.log(scrollTop)
+
+      let startVisiblePos = scrollTop - targetHeight,
+        endVisiblePos = scrollTop + targetHeight
+      startVisiblePos = startVisiblePos > 0 ? startVisiblePos : 0
+      endVisiblePos =
+        endVisiblePos < config.nodeHeight * nodeNum
+          ? endVisiblePos
+          : config.nodeHeight * nodeNum
+      this.renderNodeList = [
+        Math.floor(startVisiblePos / config.nodeHeight),
+        Math.ceil(endVisiblePos / config.nodeHeight)
+      ]
     }
   }
 }
@@ -137,6 +152,7 @@ export default {
 
   .json-wrapper {
     width: 50%;
+    overflow: scroll;
     .common-left-border-primary;
   }
 

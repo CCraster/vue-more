@@ -87,7 +87,7 @@
 import ClickOutside from 'vue-click-outside'
 import { mapState } from 'vuex'
 // import store from '@/store/';
-import Cookie from '@/common/cookie'
+import Cookie from '@/utils/cookie'
 import Footer from '@/components/page/Footer'
 
 import {
