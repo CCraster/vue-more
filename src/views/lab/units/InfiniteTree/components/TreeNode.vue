@@ -1,5 +1,5 @@
 <template>
-  <div class="node-wrapper" :style="nodeStyle" v-if="shouldRender">
+  <div class="node-wrapper" :style="nodeStyle">
     <span
       :class="{
         'el-icon-folder-remove': !treeNode.isLeaf && !treeNode.clip,
@@ -34,11 +34,6 @@ export default {
     translateY: {
       type: Number,
       default: 0
-    },
-    // 节点是否应该渲染
-    shouldRender: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {

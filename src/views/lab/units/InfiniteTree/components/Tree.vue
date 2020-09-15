@@ -1,12 +1,11 @@
 <template>
   <div :style="{ position: 'relative', height: 5000 * 22 + 'px' }">
     <tree-node
-      v-for="(node, index) in treeNodeList"
+      v-for="(node, index) in shouldRenderNodeList"
       :key="index"
       :treeNode="node"
       :tabSize="tabSize"
-      :translateY="index * treeNodeHeight"
-      :shouldRender="isInfiniteTree ? shouldRender(index) : true"
+      :translateY="(renderNodePosRange[0] + index) * treeNodeHeight"
     />
   </div>
 </template>
@@ -22,7 +21,7 @@ export default {
       type: Object,
       default: () => {}
     },
-    renderNodeList: {
+    renderNodePosRange: {
       type: Array,
       default: () => []
     },
@@ -37,8 +36,9 @@ export default {
   },
   data() {
     return {
-      treeNodeList: [],
-      tabSize: 16, // tree锁进px
+      totalNodeList: [],
+      shouldRenderNodeList: [],
+      tabSize: 16, // tree缩进px
       treeNodeHeight: 22 // 树节点高度
     }
   },
@@ -47,16 +47,27 @@ export default {
       immediate: true,
       handler(newValue, oldValue) {
         if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
-          this.treeNodeList = JsonObjectToTreeList(newValue)
+          this.totalNodeList = JsonObjectToTreeList(newValue)
+          this.computeShouldRenderNodeList()
         }
+      }
+    },
+    renderNodePosRange: {
+      handler() {
+        this.computeShouldRenderNodeList()
       }
     }
   },
   methods: {
-    shouldRender(index) {
-      return index < this.renderNodeList[0] || index > this.renderNodeList[1]
-        ? false
-        : true
+    computeShouldRenderNodeList() {
+      if (this.renderNodePosRange.length === 2) {
+        this.shouldRenderNodeList = this.totalNodeList.slice(
+          this.renderNodePosRange[0],
+          this.renderNodePosRange[1]
+        )
+      } else {
+        this.shouldRenderNodeList = this.totalNodeList
+      }
     }
   }
 }

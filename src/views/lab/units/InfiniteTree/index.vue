@@ -3,7 +3,7 @@
     <div class="tree-wrapper" :style="{}" @scroll="throttleScroll">
       <tree
         v-model="jsonCode"
-        :renderNodeList="renderNodeList"
+        :renderNodePosRange="renderNodePosRange"
         :is-infinite-tree="true"
       />
     </div>
@@ -47,7 +47,7 @@ export default {
     return {
       fakeConfig: '5000, 3', // fake数据默认配置
       loading: false, // fake数据过程
-      renderNodeList: [0, 100], // 记录需要渲染的节点的下标最小&最大值
+      renderNodePosRange: [0, 100], // 记录需要渲染的节点的下标最小&最大值
       throttleScroll: () => {},
       jsonCode: fakeJsonData(5000, 3) || {
         a: {
@@ -100,13 +100,26 @@ export default {
     }
   },
   mounted() {
-    this.throttleScroll = throttle(this.onScroll, 300)
+    this.throttleScroll = throttle(this.onScroll, 100)
   },
   methods: {
     fakeData() {
       let config = this.fakeConfig.split(',').map(d => parseInt(d))
       // this.loading = true
+      // setTimeout(() => {
+      //   console.time()
+      //   this.jsonCode = fakeJsonData(...config)
+      //   console.timeEnd()
+      // }, 0)
+
       this.jsonCode = fakeJsonData(...config)
+      // this.$nextTick(() => {
+      //   this.loading = false
+      // })
+
+      // setTimeout(() => {
+      //   this.loading = false
+      // }, 1000)
     },
     onScroll(e) {
       const config = {
@@ -126,7 +139,7 @@ export default {
         endVisiblePos < config.nodeHeight * nodeNum
           ? endVisiblePos
           : config.nodeHeight * nodeNum
-      this.renderNodeList = [
+      this.renderNodePosRange = [
         Math.floor(startVisiblePos / config.nodeHeight),
         Math.ceil(endVisiblePos / config.nodeHeight)
       ]
