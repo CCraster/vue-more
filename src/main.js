@@ -11,6 +11,9 @@ import './styles/common.less' // 引用全局通用less样式
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
+import eventBus from '@/utils/eventBus'
+Vue.prototype.$eventBus = eventBus
+
 Vue.use(ElementUI, { size: 'small', zIndex: 3000 })
 Vue.use(VueAnime)
 Vue.use(VueParticles)

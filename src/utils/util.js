@@ -134,3 +134,16 @@ export const throttle = (fn, interval = 300) => {
     }
   }
 }
+
+/**
+ * 根据路径数据path，从obj取出对应值
+ * @param {*} obj
+ * @param {array} path
+ */
+export const getValueFromPath = (obj, path) => {
+  let result = obj
+  path.forEach(item => {
+    result = result[item]
+  })
+  return result
+}

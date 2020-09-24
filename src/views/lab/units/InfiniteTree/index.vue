@@ -7,11 +7,11 @@
         :is-infinite-tree="true"
       />
     </div>
-    <codemirror
+    <!-- <codemirror
       :value="formatedJsonCode"
       :options="cmOption"
       class="json-wrapper"
-    />
+    /> -->
     <div class="tool-wrapper">
       <el-input
         size="mini"
@@ -29,8 +29,14 @@
 <script>
 import Tree from './components/Tree.vue'
 import JSON5 from 'json5'
-import { fakeJsonData } from './utils.mjs'
-import { throttle } from '@/utils/util.js'
+import {
+  fakeTreeJsonData,
+  setChildrenStatus,
+  checkAncestorStatus,
+  treeJson2List
+} from './utils.js'
+import { throttle, getValueFromPath } from '@/utils/util.js'
+import { generateTreeNode } from './utils'
 
 import { codemirror } from 'vue-codemirror'
 import 'codemirror/mode/javascript/javascript.js'
@@ -45,29 +51,12 @@ export default {
   },
   data() {
     return {
-      fakeConfig: '5000, 3', // fake数据默认配置
+      fakeConfig: '50000, 3', // fake数据默认配置
       loading: false, // fake数据过程
       renderNodePosRange: [0, 100], // 记录需要渲染的节点的下标最小&最大值
       throttleScroll: () => {},
-      jsonCode: fakeJsonData(5000, 3) || {
-        a: {
-          a1: 'a1',
-          a2: {
-            a3: 'a3'
-          },
-          a4: 'a4',
-          a5: {
-            a6: 'a6'
-          },
-          a7: {
-            a8: 'a8'
-          }
-        },
-        b: {
-          b2: 'b2',
-          b1: 'b1'
-        }
-      },
+      jsonCode: [],
+      nodeNum: 0, // 节点总数
       cmOption: {
         // tabSize: 2,
         readOnly: true,
@@ -100,7 +89,34 @@ export default {
     }
   },
   mounted() {
-    this.throttleScroll = throttle(this.onScroll, 100)
+    this.jsonCode = fakeTreeJsonData(10000, 3)
+    this.nodeNum = treeJson2List(this.jsonCode).length
+
+    this.throttleScroll = throttle(this.onScroll, 50)
+
+    this.$eventBus.$on('infiniteTree/changeNode', this.handleChangeNode)
+    this.$eventBus.$on('infiniteTree/selectNode', this.handleSelectNode)
+    this.$eventBus.$on('infiniteTree/openNode', this.handleOpenNode)
+    this.$eventBus.$on('infiniteTree/deleteNode', this.handleDeleteNode)
+    this.$eventBus.$on(
+      'infiniteTree/addChildrenNode',
+      this.handleAddChildrenNode
+    )
+    this.$eventBus.$on('infiniteTree/addBrotherNode', this.handleAddBrotherNode)
+  },
+  beforeDestroy() {
+    this.$eventBus.$off('infiniteTree/changeNode', this.handleChangeNode)
+    this.$eventBus.$off('infiniteTree/selectNode', this.handleSelectNode)
+    this.$eventBus.$off('infiniteTree/openNode', this.handleOpenNode)
+    this.$eventBus.$off('infiniteTree/deleteNode', this.handleDeleteNode)
+    this.$eventBus.$off(
+      'infiniteTree/addChildrenNode',
+      this.handleAddChildrenNode
+    )
+    this.$eventBus.$off(
+      'infiniteTree/addBrotherNode',
+      this.handleAddBrotherNode
+    )
   },
   methods: {
     fakeData() {
@@ -112,7 +128,8 @@ export default {
       //   console.timeEnd()
       // }, 0)
 
-      this.jsonCode = fakeJsonData(...config)
+      this.jsonCode = fakeTreeJsonData(...config)
+      this.nodeNum = treeJson2List(this.jsonCode).length
       // this.$nextTick(() => {
       //   this.loading = false
       // })
@@ -122,27 +139,70 @@ export default {
       // }, 1000)
     },
     onScroll(e) {
+      // console.log('start: ', Date.now())
       const config = {
         nodeHeight: 22, // 节点高度
-        visibleOffset: 5 // 视窗上下visibleOffset个高度的节点渲染
+        visibleOffset: 2 // 视窗上下visibleOffset个高度的节点渲染
       }
-      const nodeNum = parseInt(this.fakeConfig.split(',')[0])
+      // const nodeNum = parseInt(this.fakeConfig.split(',')[0])
       let scrollTop = e.target.scrollTop,
         targetHeight = e.target.clientHeight
-      if (!scrollTop) return
-      // console.log(Date.now())
+      if (scrollTop !== 0 && !scrollTop) return
 
       let startVisiblePos = scrollTop - targetHeight * config.visibleOffset,
         endVisiblePos = scrollTop + targetHeight * (config.visibleOffset + 1)
       startVisiblePos = startVisiblePos > 0 ? startVisiblePos : 0
       endVisiblePos =
-        endVisiblePos < config.nodeHeight * nodeNum
+        endVisiblePos < config.nodeHeight * this.nodeNum
           ? endVisiblePos
-          : config.nodeHeight * nodeNum
+          : config.nodeHeight * this.nodeNum
       this.renderNodePosRange = [
         Math.floor(startVisiblePos / config.nodeHeight),
         Math.ceil(endVisiblePos / config.nodeHeight)
       ]
+      // console.log('end: ', Date.now())
+    },
+    makeNewJsonCode() {
+      this.jsonCode = [...this.jsonCode]
+    },
+    // 增 - 增加兄弟节点
+    handleAddBrotherNode(path) {
+      let node = getValueFromPath(this.jsonCode, path.slice(0, -1))
+      let addIndex = path[path.length - 1]
+      node.splice(addIndex + 1, 0, generateTreeNode('new node'))
+      this.makeNewJsonCode()
+    },
+    // 增 - 增加子节点
+    handleAddChildrenNode(path) {
+      let node = getValueFromPath(this.jsonCode, path)
+      node.children.unshift(generateTreeNode('new node'))
+      this.makeNewJsonCode()
+    },
+    // 删
+    handleDeleteNode(path) {
+      let node = getValueFromPath(this.jsonCode, path.slice(0, -1))
+      let deleteIndex = path[path.length - 1]
+      node.splice(deleteIndex, 1)
+      this.makeNewJsonCode()
+    },
+    // 改
+    handleChangeNode(path, newName) {
+      let node = getValueFromPath(this.jsonCode, path)
+      node.name = newName
+      this.makeNewJsonCode()
+    },
+    // 选择node
+    handleSelectNode(path, selected) {
+      let node = getValueFromPath(this.jsonCode, path)
+      setChildrenStatus(node, 'selected', selected) // 设置后代节点
+      checkAncestorStatus(this.jsonCode, path.slice(0, -1), selected) // 检查祖先的选中状态
+      this.makeNewJsonCode()
+    },
+    // 折叠 / 展开节点
+    handleOpenNode(path) {
+      let node = getValueFromPath(this.jsonCode, path)
+      node.state.opened = !node.state.opened
+      this.makeNewJsonCode()
     }
   }
 }
@@ -163,6 +223,7 @@ export default {
     width: 50%;
     padding: 10px 8px;
     overflow: scroll;
+    -webkit-overflow-scrolling: auto;
     .common-left-border-primary;
   }
 
