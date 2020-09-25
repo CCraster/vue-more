@@ -42,7 +42,7 @@ export default {
   },
   data() {
     return {
-      totalNodeList: [],
+      // totalNodeList: [],
       shouldRenderNodeList: [],
       focusNode: null,
       isTreeFocus: false,

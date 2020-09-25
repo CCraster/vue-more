@@ -7,21 +7,33 @@
         :is-infinite-tree="true"
       />
     </div>
-    <!-- <codemirror
+    <codemirror
       :value="formatedJsonCode"
       :options="cmOption"
       class="json-wrapper"
-    /> -->
+      v-if="showCodeMirror"
+    />
     <div class="tool-wrapper">
       <el-input
         size="mini"
         placeholder="10, 3 => 节点数, 最大层数"
-        style="width: 180px;margin-right: 5px"
+        style="width: 170px"
         v-model="fakeConfig"
+        width="50px"
       ></el-input>
-      <el-button type="primary" size="mini" @click="fakeData"
+      <el-button
+        type="primary"
+        size="mini"
+        @click="fakeData"
+        style="margin: 0 5px"
         >Fake Data</el-button
       >
+      <el-switch
+        v-model="showCodeMirror"
+        active-color="#007add"
+        inactive-color="rgb(0 122 221 / 20%)"
+      >
+      </el-switch>
     </div>
   </div>
 </template>
@@ -51,7 +63,8 @@ export default {
   },
   data() {
     return {
-      fakeConfig: '50000, 3', // fake数据默认配置
+      showCodeMirror: false, // 是否显示CodeMirror
+      fakeConfig: '10000, 3', // fake数据默认配置
       loading: false, // fake数据过程
       renderNodePosRange: [0, 100], // 记录需要渲染的节点的下标最小&最大值
       throttleScroll: () => {},
@@ -89,8 +102,7 @@ export default {
     }
   },
   mounted() {
-    this.jsonCode = fakeTreeJsonData(10000, 3)
-    this.nodeNum = treeJson2List(this.jsonCode).length
+    this.fakeData()
 
     this.throttleScroll = throttle(this.onScroll, 50)
 
@@ -240,8 +252,9 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 280px;
+    // width: 280px;
     height: 40px;
+    padding: 10px;
     border-top-left-radius: 5px;
     border-bottom-right-radius: 5px;
     background-color: fadeout(@--color-primary, 80%);
